@@ -14,7 +14,6 @@ uniform mat4 model;
 
 uniform sampler2D tex0;
 
-uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform float ambientStrength;
 
@@ -35,23 +34,18 @@ void main()
         discard ;
 
 	//Calculates all the phong lighting
-	vec3 ambient = ambientStrength * lightColor;
+	vec3 lightColor = vec3(0.7);
+	vec3 ambient = 0.5 * lightColor;
 	float specularStrength = 0.5;
 
 	//Diffuse light
 	vec3 norm = normalize(FragNormal);
-	vec3 lightDir = normalize(lightPos - FragPos);
+	vec3 lightDir = normalize(viewPos - FragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec3 diffuse = diff * lightColor;
 
 	//Specular light
-	vec3 viewDir = normalize(viewPos - FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
-	vec3 specular = specularStrength * spec * lightColor;
-
-	vec3 result = (ambient + diffuse + specular);
-	result = vec3(1);
+	vec3 result = (ambient + diffuse);
 
 	outColor = vec4(result, 1.0) * (finalTexture);
 }

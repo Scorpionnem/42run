@@ -6,14 +6,14 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:27:23 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 14:36:08 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 19:20:11 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WORLD_HPP
 # define WORLD_HPP
 
-#include "Room.hpp"
+# include "Room.hpp"
 
 class   World
 {
@@ -31,13 +31,13 @@ class   World
 			rooms.clear();
 			speed = 0;
 			int	offset = 0;
-	    	std::srand(1);
+	    	std::srand(glfwGetTime());
 			Mesh	*mesh;
 			for (int i = 0; i < 8; i++)
 			{
 				mesh = new Mesh();
-				mesh->loadOBJ("models/plane.obj", MISSING_TEXTURE);
-				rooms.push_back(new Room(mesh, vec3(0, 0, offset), Hardcoded));
+				mesh->loadOBJ("models/cube.obj", MISSING_TEXTURE);
+				rooms.push_back(new Room(mesh, vec3(0, 0, offset), Hardcoded, false));
 				offset -= 8;
 			}
 			
@@ -68,9 +68,25 @@ class   World
 		void	draw(Shader &shader)
 		{
 			for (auto it = rooms.begin(); it != rooms.end(); it++)
-			{
 				(*it)->draw(shader);
+		}
+		bool	doesPlayerCollide(vec3 playerPos)
+		{
+			for (auto it = rooms.begin(); it != rooms.end(); it++)
+			{
+				if ((*it)->doesPlayerCollide(playerPos))
+					return (true);
 			}
+			return (false);
+		}
+		bool	doesPlayerCollect(vec3 playerPos)
+		{
+			for (auto it = rooms.begin(); it != rooms.end(); it++)
+			{
+				if ((*it)->doesPlayerCollect(playerPos))
+					return (true);
+			}
+			return (false);
 		}
 
 		float	speed;
@@ -118,23 +134,23 @@ class   World
 			RoomType	type = chooseRoomType(prevRoomType);
 
     		std::string path = "models/corridor.obj";
-    		std::string texPath = MISSING_TEXTURE;
+    		std::string texPath = "models/bricks.bmp";
 			if (type == Cluster1 || type == Cluster2 || type == Cluster3)
 			{
 				path = "models/clustermiddle.obj";
-				texPath = "textures/grey.bmp";
+				texPath = "models/bricks.bmp";
 			}
 			if (type == Cluster1Exit || type == Cluster2Exit || type == Cluster3Exit)
 			{
 				path = "models/clusterexit.obj";
-				texPath = "textures/icon.bmp";
+				texPath = "models/bricks.bmp";
 			}
 			if (type == Cluster1Entrance || type == Cluster2Entrance || type == Cluster3Entrance)
-				texPath = "textures/cobblestone.bmp";
+				texPath = "models/bricks.bmp";
 			if (type == Corridor)
-				texPath = "textures/east.bmp";
+				texPath = "models/bricks.bmp";
 			if (type == Cafetaria)
-				texPath = "textures/box.bmp";
+				texPath = "models/bricks.bmp";
 			
     		Mesh* mesh = new Mesh();
 			mesh->loadOBJ(path, texPath);

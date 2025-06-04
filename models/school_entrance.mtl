@@ -1,2 +1,8 @@
 # Made in Blockbench 4.12.1
+newmtl m_3e186e99-8443-ae0c-76a4-9b5bc658bd6d
+map_Kd school_entrance.bmp
+newmtl m_da152403-eb20-9e3a-0db7-248418da30ea
+map_Kd grass.bmp
+newmtl m_98e8b7ee-8fbd-f2b1-54aa-f5effe72be63
+map_Kd bark.bmp
 newmtl none

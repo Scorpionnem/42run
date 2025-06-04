@@ -13,18 +13,19 @@ out vec2 texCoord;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform vec3 viewPos;
 
 // Controls how much the world curves — tweak as needed
-uniform float curveAmount = 200.0;
+uniform float curveAmount = 190.0;
 
 void main()
 {
     vec4 worldPos = model * vec4(aPos, 1.0);
 
 	// Distance to origin in XZ plane
-	float dist = length(vec2(0, worldPos.z));
-	
-	// Apply downward curve based on distance
+	float dist = length(vec2(viewPos.z, worldPos.z));
+	worldPos.y -= (dist * dist) / curveAmount;
+	dist = length(vec2(viewPos.x, worldPos.x));
 	worldPos.y -= (dist * dist) / curveAmount;
 
     // Apply model/view/projection to curved position

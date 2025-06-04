@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 14:20:04 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 18:29:56 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "Game.hpp"
 
-float	FOV = 70;
+float	FOV = 65;
 float	SCREEN_WIDTH = 820;
 float	SCREEN_HEIGHT = 900;
 float	RENDER_DISTANCE = 1000;

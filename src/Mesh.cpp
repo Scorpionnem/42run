@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:45:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 14:22:47 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 15:41:15 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,28 @@ void	Mesh::draw(Shader &shader)
 	model = translate(model, center);
 	
 	model = translate(model, center * -1);
+
+	shader.setMat4("model", model);
+	for (auto it = materialGroups.begin(); it != materialGroups.end(); it++)
+	{
+		it->second.texture->use();
+		glBindVertexArray(it->second.VAO);
+		glDrawElements(GL_TRIANGLES, it->second.indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
+}
+
+void	Mesh::draw(Shader &shader, const vec3 &scaleVec)
+{
+	shader.use();
+	mat4	model(1.0f);
+	model = translate(model, pos);
+	model = translate(model, center);
+
+	model = scale(model, scaleVec);
+	
+	model = translate(model, center * -1);
+	
 
 	shader.setMat4("model", model);
 	for (auto it = materialGroups.begin(); it != materialGroups.end(); it++)

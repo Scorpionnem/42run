@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:31:26 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 14:33:07 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 19:36:51 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,33 +33,56 @@ enum RoomType
 	Cluster3Exit
 };
 
-struct	Obstacle
+struct	Object
 {
 	Mesh	*model;
 	vec3	offset;
+	vec3	scale;
+	bool	draw;
 };
 
 class	Room
 {
 	public:
 		Mesh		*model;
-		std::vector<Obstacle> obstacles;
+		std::vector<Object> obstacles;
+		std::vector<Object> collectibles;
 		RoomType	type;
 		vec3		pos;
-		Room(Mesh *model, const vec3 &pos, RoomType type) : model(model), type(type), pos(pos)
+		bool	drawModel;
+		Room(Mesh *model, const vec3 &pos, RoomType type) : model(model), type(type), pos(pos), drawModel(true)
 		{
-			int randomAmount = std::rand() % 5;
+			int randomAmount = rand() % 10;
 			int	neg = 1;
 			for (int i = 0; i < randomAmount; i++)
 			{
 				rand() % 2 == 1 ? neg = 1 : neg = -1;
-				obstacles.push_back({new Mesh("models/cube.obj", MISSING_TEXTURE), vec3((std::rand() % 4) * neg, 0, (std::rand() % 4) * neg)});
+				float	pos = std::rand() % 4 * neg;
+				obstacles.push_back({new Mesh("models/cube.obj", MISSING_TEXTURE), vec3(pos, 0, pos), vec3(1), true});
 			}
+			randomAmount = rand() % 2;
+			neg = 1;
+			for (int i = 0; i < randomAmount; i++)
+			{
+				rand() % 2 == 1 ? neg = 1 : neg = -1;
+				float	pos = std::rand() % 4 * neg;
+				collectibles.push_back({new Mesh("models/cube.obj", "models/125.bmp"), vec3(pos, 0, pos), vec3(1), true});
+			}
+			model->pos = pos;
+		}
+		Room(Mesh *model, const vec3 &pos, RoomType type, bool draw) : model(model), type(type), pos(pos), drawModel(draw)
+		{
 			model->pos = pos;
 		}
 		~Room()
 		{
 			delete model;
+			if (obstacles.size())
+				for (auto it = obstacles.begin(); it != obstacles.end(); it++)
+					delete it->model;
+			if (collectibles.size())
+				for (auto it = collectibles.begin(); it != obstacles.end(); it++)
+					delete it->model;
 		}
 		
 		void update(float deltaTime, float speed)
@@ -73,11 +96,44 @@ class	Room
 			for (auto it = obstacles.begin(); it != obstacles.end(); it++)
 			{
 				it->model->pos = pos + it->offset;
+				it->model->draw(shader, it->scale);
+			}
+			for (auto it = collectibles.begin(); it != collectibles.end(); it++)
+			{
+				if (!it->draw)
+					continue ;
+				it->model->pos = pos + it->offset;
 				it->model->draw(shader);
 			}
 			model->pos = pos;
-    	    model->draw(shader);
+			if (drawModel)
+    	    	model->draw(shader);
     	}
+		float	distance(vec3 p1, vec3 p2)
+		{
+			return (std::sqrt(std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2) + std::pow(p1.z - p2.z, 2)));
+		}
+		bool	doesPlayerCollide(vec3 playerPos)
+		{
+			for (auto it = obstacles.begin(); it != obstacles.end(); it++)
+			{
+				if (distance(pos + it->offset, playerPos) < 1)
+					return (true);
+			}
+			return (false);
+		}
+		bool	doesPlayerCollect(vec3 playerPos)
+		{
+			for (auto it = collectibles.begin(); it != collectibles.end(); it++)
+			{
+				if (distance(pos + it->offset, playerPos) < 1 && it->draw)
+				{
+					it->draw = false;
+					return (true);
+				}
+			}
+			return (false);
+		}
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:47:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/01 15:09:11 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 15:28:29 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ class Mesh
                        const vec3 &color, const std::string &mtl);
 		void upload();
 		void	draw(Shader &shader);
+		void	draw(Shader &shader, const vec3 &scale);
 		void	calcMeshCenter(void);
 		Mesh(const std::string &filename, const std::string &baseTexture);
 		Mesh();

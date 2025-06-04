@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:14:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 14:55:07 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 18:56:54 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,13 @@ class	Game
 
 		bool	paused = true;
 		bool	started = false;
+		bool	died = false;
+		double	diedTime = 0;
 		double	pauseTime = 0;
+		float	distance = 0;
+		int		collectibles = 0;
+		int		bestCollecCount = 0;
+		int		bestDistance = 0;
 };
 
 extern Game	*g_Game;

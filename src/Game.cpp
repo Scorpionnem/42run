@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 14:55:10 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 19:30:43 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,41 @@ Game::~Game()
 {
 }
 
+void	quitGame()
+{
+	g_Game->started = false;
+	g_Game->diedTime = 0;
+	g_Game->died = false;
+	g_Game->world.speed = 10;
+	if (g_Game->distance > g_Game->bestDistance)
+		g_Game->bestDistance = g_Game->distance;
+	if (g_Game->collectibles > g_Game->bestCollecCount)
+		g_Game->bestCollecCount = g_Game->collectibles;
+	g_Game->distance = 0;
+	g_Game->collectibles = 0;
+	g_Game->pause();
+}
+
 void Game::logic()
 {
 	camPos.x = 0;
 	camPos.y = 3.5;
 	camPos.z = 3.5;
 	camPitch = -15;
-	if (paused)
+	if (died && glfwGetTime() - diedTime > 1)
+		quitGame();
+	if (paused || died)
 		return ;
+	distance += world.speed * window.getDeltaTime();
 	player.update(window.getDeltaTime());
 	world.update(window.getDeltaTime());
+	if (world.doesPlayerCollide(player.pos))
+	{
+		diedTime = glfwGetTime();
+		died = true;
+	}
+	if (world.doesPlayerCollect(player.pos))
+		collectibles++;
 }
 
 void	Game::keyHook()
@@ -65,10 +90,10 @@ void	Game::keyHook()
 	if (glfwGetKey(window.getWindowData(), GLFW_KEY_D) == GLFW_PRESS)
 		player.pos.x += 6 * window.getDeltaTime();
 
-	if (player.pos.x > 2.5)
-		player.pos.x = 2.5;
-	if (player.pos.x < -2.5)
-		player.pos.x = -2.5;
+	if (player.pos.x > 3)
+		player.pos.x = 3;
+	if (player.pos.x < -3)
+		player.pos.x = -3;
 }
 
 void	Game::draw3D()
@@ -91,54 +116,38 @@ void	Game::drawUI()
 
     glDisable(GL_DEPTH_TEST);
 
+	if (died)
+		font.putString("you died", *textShader, vec2(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 50), vec2(300, 100));
+
 	if (paused && started)
 	{
         //Centers the pause interface
 		Interface	*pause = ui.get("pause");
 		pause->buttons[0].pos = vec2((SCREEN_WIDTH / 2) - 100, 50);
-		pause->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) - 80);
-		pause->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
-		pause->buttons[3].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
-		pause->buttons[4].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 160);
+		pause->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
+		pause->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
+		pause->buttons[3].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 160);
 		ui.draw("pause", window.getWindowData(), *guiShader, font, *textShader);
 	}
 	if (!started)
 	{
+		Interface	*start = ui.get("start");
+		std::string	bestdistancemeter = "best distance: " + toString((int)bestDistance);
+		std::string	bestcollectiblesmeter = "best collectibles: " + toString((int)bestCollecCount);
+		font.putString(bestdistancemeter, *textShader, vec2((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 60), vec2(300, 50));
+		font.putString(bestcollectiblesmeter, *textShader, vec2((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 110), vec2(300, 50));
+		start->buttons[0].pos = vec2((SCREEN_WIDTH / 2) - 100, 50);
+		start->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
+		start->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
 		ui.draw("start", window.getWindowData(), *guiShader, font, *textShader);
 		camYaw += 4 * window.getDeltaTime();
 		return ;
 	}
 
-	if (world.rooms.front()->type == Cluster1)
-		font.putString("cluster1", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster1Entrance)
-		font.putString("cluster1entrance", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster1Exit)
-		font.putString("cluster1exit", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster2)
-		font.putString("cluster2", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster2Entrance)
-		font.putString("cluster2entrance", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster2Exit)
-		font.putString("cluster2exit", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster3)
-		font.putString("cluster3", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster3Entrance)
-		font.putString("cluster3entrance", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Cluster3Exit)
-		font.putString("cluster3exit", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == Hardcoded)
-		font.putString("hardcoded", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == RoomType::Cafetaria)
-		font.putString("cafetaria", *textShader, vec2(0, 120), vec2(300, 100));
-	if (world.rooms.front()->type == RoomType::Corridor)
-		font.putString("corridor", *textShader, vec2(0, 120), vec2(300, 100));
-		
-	std::string	speedstr = "speed " + toString((float)world.speed);
-	font.putString(speedstr, *textShader, vec2(0, 220), vec2(250, 100));
-
-	std::string	playerPos = "x " + toString(camPos.x) + " y " + toString(camPos.y) + " z " + toString(camPos.z);
-	font.putString(playerPos, *textShader, vec2(0, 0), vec2(250, 100));
+	std::string	distancemeter = "distance: " + toString((int)distance);
+	std::string	collectiblesmeter = "collectibles: " + toString((int)collectibles);
+	font.putString(distancemeter, *textShader, vec2(0, 0), vec2(250, 50));
+	font.putString(collectiblesmeter, *textShader, vec2(0, 50), vec2(250, 50));
 	displayFPS();
     glEnable(GL_DEPTH_TEST);
 }
@@ -179,24 +188,16 @@ void	resetGame()
 	resumeGame();
 }
 
-void	quitGame()
-{
-	g_Game->started = false;
-	g_Game->pause();
-}
-
 void	Game::loadUIs()
 {
 	//Loads pause interface
 	ui.createInterface("pause");
 	ui.addButtonToInterface("pause", Button("", 200, 200, vec2((SCREEN_WIDTH / 2) - 100, 50), do_nothing, ui.iconTexture, ui.iconTexture));
-	ui.addButtonToInterface("pause", Button("resume", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) - 80), resumeGame, ui.buttonTexture, ui.buttonPressedTexture));
-	ui.addButtonToInterface("pause", Button("settings", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2)), resumeGame, ui.buttonTexture, ui.buttonPressedTexture));
-	ui.addButtonToInterface("pause", Button("stop", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80), quitGame, ui.buttonTexture, ui.buttonPressedTexture));
+	ui.addButtonToInterface("pause", Button("resume", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80), resumeGame, ui.buttonTexture, ui.buttonPressedTexture));
+	ui.addButtonToInterface("pause", Button("stop", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 240), quitGame, ui.buttonTexture, ui.buttonPressedTexture));
 
 	ui.createInterface("start");
 	ui.addButtonToInterface("start", Button("", 200, 200, vec2((SCREEN_WIDTH / 2) - 100, 50), do_nothing, ui.iconTexture, ui.iconTexture));
-	ui.addButtonToInterface("start", Button("start", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2)), resetGame, ui.buttonTexture, ui.buttonPressedTexture));
-	ui.addButtonToInterface("start", Button("settings", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80), do_nothing, ui.buttonTexture, ui.buttonPressedTexture));
-	ui.addButtonToInterface("start", Button("quit", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 160), closeWindow, ui.buttonTexture, ui.buttonPressedTexture));
+	ui.addButtonToInterface("start", Button("start", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) - 80), resetGame, ui.buttonTexture, ui.buttonPressedTexture));
+	ui.addButtonToInterface("start", Button("quit", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80), closeWindow, ui.buttonTexture, ui.buttonPressedTexture));
 }
