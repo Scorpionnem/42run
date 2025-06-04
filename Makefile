@@ -1,7 +1,7 @@
 NAME := 42run
 
 OBJ_DIR := ./obj/
-INCLUDE_DIRS := ./includes/ ./GLFW/include/GLFW/ ./includes/glad/. ./includes/render
+INCLUDE_DIRS := ./includes/ ./GLFW/include/GLFW/ ./includes/glad/. ./includes/render ./src/
 
 GLFWARCHIVE = GLFW/build/src/libglfw3.a
 
@@ -20,7 +20,6 @@ CPP_FILES :=	main \
 				Window \
 				vec3 \
 				mat4 \
-				Terminal \
 				Camera \
 				Shader \
 				Mesh \
@@ -31,7 +30,7 @@ CPP_FILES :=	main \
 				Interface \
 				Font \
 				Skybox \
-				InterfaceFunctions
+				Game
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))
 
@@ -44,7 +43,7 @@ CFLAGS = -MP -MMD -Wall -Wextra -Werror -g
 
 GLAD_PATH = libs/glad
 
-all: glfw glad glm $(NAME)
+all: glfw glad $(NAME)
 
 run: all
 	@./$(NAME) models/subject/teapot.obj textures/icon.bmp
@@ -114,6 +113,6 @@ dclean: fclean
 
 re: fclean all
 
-.PHONY: all clean fclean dclean re GLFW glad run glm
+.PHONY: all clean fclean dclean re GLFW glad run
 
 -include $(DEPS)

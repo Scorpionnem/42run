@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/01 17:09:50 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/03 18:49:44 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ Window::Window() : _lastFrame(0)
 	//Inits GLFW settings
 	if (!glfwInit())
 		throw std::runtime_error("Failed to initialize glfw");
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
+
 	//Creates and opens window
 	_windowData = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WIN_NAME, NULL, NULL);
 	if (!_windowData)
@@ -51,7 +51,7 @@ Window::Window() : _lastFrame(0)
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	glfwSetFramebufferSizeCallback(_windowData, resize_hook);
-	glfwSetCharCallback(_windowData, terminal_keyboard_input);
+	// glfwSetCharCallback(_windowData, terminal_keyboard_input);
 	glfwSetKeyCallback(_windowData, key_hook);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -90,14 +90,8 @@ void		Window::loopStart(void)
 	_deltaTime = _currentFrame - _lastFrame;
 }
 
-void		Window::loopEnd(Font &font, Shader &textShader)
+void		Window::loopEnd()
 {
-	static std::string	str = "0 fps";
-	if ((int)_lastFrame != (int)_currentFrame)
-		str = displayFPS(font, textShader);
-	if (!F1 && F3)
-		font.putString(str.c_str(), textShader, vec2(SCREEN_WIDTH - str.length() * TERMINAL_CHAR_SIZE, TERMINAL_CHAR_SIZE * 0), vec2(str.length() * TERMINAL_CHAR_SIZE, TERMINAL_CHAR_SIZE));
-
 	glfwSwapBuffers(_windowData);
 	glfwPollEvents();
 

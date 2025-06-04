@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 12:21:13 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/01 15:09:45 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/03 11:36:55 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,10 @@ void Button::draw(Shader &shader, Font &font, Shader &textShader)
     
     shader.setMat4("model", model);
     
-    glDisable(GL_DEPTH_TEST);
     glBindVertexArray(buttonVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
     font.putString(this->str, textShader, vec2(this->pos.x, this->pos.y - height / 8), vec2(width, height));
-    glEnable(GL_DEPTH_TEST);
 }
 
 void    Button::checkClick(vec2 mousePos, bool mousePressed)

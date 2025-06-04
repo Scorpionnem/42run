@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:55:06 by mbatty            #+#    #+#             */
-/*   Updated: 2025/05/24 13:21:51 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 10:10:11 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 # include "libs.hpp"
 # include "Shader.hpp"
 
-extern vec3 pos;
-extern vec3 front;
-extern vec3 up;
+extern vec3 camPos;
+extern vec3 camFront;
+extern vec3 camUp;
 
 extern float	deltaTime;
 extern float	lastFrame;
 
-extern float yaw;
-extern float pitch;
+extern float camYaw;
+extern float camPitch;
 
 class Camera
 {

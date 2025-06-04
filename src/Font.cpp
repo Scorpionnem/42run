@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 14:48:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/02 09:33:28 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/03 11:36:48 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void    Font::putChar(char c, Shader &shader, vec2 pos, vec2 size)
     shader.use();
     getChar(c).use();
     
-
     mat4 model = translate(mat4(1.0f), vec3(pos.x, pos.y, 0.0f));
     model = scale(model, vec3(size.x, size.y, 1.0f));
     mat4 projection = ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
@@ -76,11 +75,9 @@ void    Font::putChar(char c, Shader &shader, vec2 pos, vec2 size)
     shader.setMat4("projection", projection);
     shader.setMat4("model", model);
 
-    glDisable(GL_DEPTH_TEST);
     glBindVertexArray(fontVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
-    glEnable(GL_DEPTH_TEST);
 }
 
 void	Font::putString(std::string str, Shader &shader, vec2 pos, vec2 size)

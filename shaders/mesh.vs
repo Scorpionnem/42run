@@ -8,23 +8,32 @@ out vec3 FragColor;
 out vec3 FragPos;
 out vec3 FragNormal;
 out vec3 FragAbsNormal;
-
-out	vec2 texCoord;
+out vec2 texCoord;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+// Controls how much the world curves — tweak as needed
+uniform float curveAmount = 200.0;
+
 void main()
 {
-	gl_Position = projection * view * model * vec4(aPos, 1.0);
+    vec4 worldPos = model * vec4(aPos, 1.0);
 
-	FragColor = aColor;
-	FragAbsNormal = abs(aNormal);
+	// Distance to origin in XZ plane
+	float dist = length(vec2(0, worldPos.z));
 	
-	FragPos = vec3(model * vec4(aPos, 1.0));
-	
-	FragNormal = mat3(transpose(inverse(model))) * aNormal;
+	// Apply downward curve based on distance
+	worldPos.y -= (dist * dist) / curveAmount;
 
-	texCoord = aTexPos;
+    // Apply model/view/projection to curved position
+    gl_Position = projection * view * worldPos;
+
+    FragColor = aColor;
+    FragAbsNormal = abs(aNormal);
+
+    FragPos = vec3(worldPos);
+    FragNormal = mat3(transpose(inverse(model))) * aNormal;
+    texCoord = aTexPos;
 }

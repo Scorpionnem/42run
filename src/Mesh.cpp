@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:45:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/02 17:32:09 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 14:22:47 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,6 @@ void	Mesh::draw(Shader &shader)
 	model = translate(model, center * -1);
 
 	shader.setMat4("model", model);
-	
 	for (auto it = materialGroups.begin(); it != materialGroups.end(); it++)
 	{
 		it->second.texture->use();

@@ -6,36 +6,36 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:54:38 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/02 13:21:32 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 10:09:26 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libs.hpp"
 #include "Camera.hpp"
 
-vec3 pos;
-vec3 front;
-vec3 up;
+vec3 camPos;
+vec3 camFront;
+vec3 camUp;
 
 float	deltaTime = 0.0f;
 float	lastFrame = 0.0f;
 
-float yaw = -90.0f;
-float pitch = 0.0f;
+float camYaw = -90.0f;
+float camPitch = 0.0f;
 
 Camera::Camera()
 {
-	pos = vec3(0.0f, 0.0f, 0.0f);
-	front = vec3(0.0f, 0.0f, -1.0f);
-	up = vec3(0.0f, 1.0f, 0.0f);
+	camPos = vec3(0.0f, 0.0f, 0.0f);
+	camFront = vec3(0.0f, 0.0f, -1.0f);
+	camUp = vec3(0.0f, 1.0f, 0.0f);
 }
 
 void	Camera::update()
 {
-	this->direction.x = cos(toRadians(yaw)) * cos(toRadians(pitch));
-	this->direction.y = sin(toRadians(pitch));
-	this->direction.z = sin(toRadians(yaw)) * cos(toRadians(pitch));
-	front = direction.normalize();
+	this->direction.x = cos(toRadians(camYaw)) * cos(toRadians(camPitch));
+	this->direction.y = sin(toRadians(camPitch));
+	this->direction.z = sin(toRadians(camYaw)) * cos(toRadians(camPitch));
+	camFront = direction.normalize();
 }
 
 void	Camera::setViewMatrix(Shader &shader)
@@ -50,5 +50,5 @@ void	Camera::setViewMatrix(Shader &shader)
 
 mat4	Camera::getViewMatrix()
 {
-	return (lookAt(pos, pos + front, up));
+	return (lookAt(camPos, camPos + camFront, camUp));
 }

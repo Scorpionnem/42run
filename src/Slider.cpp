@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 13:04:21 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/01 17:19:04 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/03 11:37:07 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,11 +140,9 @@ void    Slider::drawSlider(Shader &shader)
         
     shader.setMat4("model", model);
         
-	glDisable(GL_DEPTH_TEST);
     glBindVertexArray(sliderVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
-	glEnable(GL_DEPTH_TEST);
 }
 
 void    Slider::drawStr(Font &font, Shader &textShader)

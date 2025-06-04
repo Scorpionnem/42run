@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:10 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/02 17:26:28 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 14:14:52 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@
 # include <exception>
 # include <functional>
 # include <array>
-#include <algorithm>
+# include <algorithm>
+# include <deque>
 
 # include "vec2.hpp"
 # include "vec3.hpp"
@@ -40,6 +41,7 @@
 # include "glfw3.h"
 
 std::string	toString(int nbr);
+std::string	toString(float nbr);
 
 # define WIN_NAME "42run"
 
@@ -57,7 +59,6 @@ extern bool	F3;
 
 extern bool	mesh_spin;
 
-extern bool paused;
 extern vec3	backgroundColor;
 
 extern bool	lock_fps;
@@ -69,6 +70,8 @@ extern int	interpolate;
 extern int	skybox_interpolate;
 extern bool	camera_toggle;
 extern bool	mesh_spin;
+extern float ambientStrength;
+
 
 # define TERMINAL_CHAR_SIZE 15
 # define MAX_SHADER_EFFECT 3
