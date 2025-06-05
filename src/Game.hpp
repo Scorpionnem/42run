@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:14:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 18:56:54 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 21:45:10 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 void	resumeGame();
 
 void	closeWindow();
+# include "MeshManager.hpp"
+
+extern MeshManager	*g_meshManager;
+
 
 # include "libs.hpp"
 # include "Window.hpp"
@@ -28,6 +32,8 @@ void	closeWindow();
 # include "UIManager.hpp"
 
 # include "World.hpp"
+
+
 
 # define SKYBOX_PATHES "textures/skybox/right.bmp","textures/skybox/left.bmp","textures/skybox/top.bmp","textures/skybox/bottom.bmp","textures/skybox/front.bmp","textures/skybox/back.bmp"
 
@@ -56,6 +62,7 @@ class	Game
 
 		ShaderManager	shaders;
 		UIManager		ui;
+		MeshManager		meshManager;
         World           world;
         Player          player;
 

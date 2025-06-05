@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:45:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 15:41:15 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/05 12:45:04 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Mesh::Mesh(const std::string &filename, const std::string &baseTexture)
 
 Mesh::Mesh()
 {
+	this->rotateIntensity = vec3(0);
 	this->pos = vec3(0.0);
 }
 
@@ -143,10 +144,12 @@ void	Mesh::draw(Shader &shader, const vec3 &scaleVec)
 	model = translate(model, pos);
 	model = translate(model, center);
 
-	model = scale(model, scaleVec);
+	if (rotateIntensity.x || rotateIntensity.y || rotateIntensity.z)
+		model = rotate(model, glfwGetTime(), rotateIntensity);
 	
 	model = translate(model, center * -1);
 	
+	model = scale(model, scaleVec);
 
 	shader.setMat4("model", model);
 	for (auto it = materialGroups.begin(); it != materialGroups.end(); it++)

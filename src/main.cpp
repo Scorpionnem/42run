@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 18:29:56 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/04 21:31:29 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,15 @@ void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods)
 		return ;
 }
 
+MeshManager	*g_meshManager;
+
 int	main(void)
 {
 	try {
+		
 		Game	game;
 		g_Game = &game;
+		g_meshManager = &game.meshManager;
 
 		while (game.window.up())
 		{

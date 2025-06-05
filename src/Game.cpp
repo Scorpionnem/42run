@@ -6,12 +6,13 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 19:30:43 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/05 12:14:08 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Game.hpp"
+
 
 Game::Game() : skybox({SKYBOX_PATHES})
 {
@@ -25,6 +26,12 @@ Game::Game() : skybox({SKYBOX_PATHES})
 	shaders.get("mesh")->setInt("tex0", 0);
 	shaders.get("skybox")->use();
 	shaders.get("skybox")->setInt("skybox", 0);
+
+	meshManager.load("models/scorpionem/scorpionem.obj");
+	meshManager.load("models/school_entrance.obj");
+	meshManager.load("models/clustermiddle.obj", "models/bricks.bmp");
+	meshManager.load("models/clusterexit.obj", "models/bricks.bmp");
+	meshManager.load("models/corridor.obj", "models/bricks.bmp");
 	
 	loadUIs();
 }
@@ -60,25 +67,25 @@ void Game::logic()
 		return ;
 	distance += world.speed * window.getDeltaTime();
 	player.update(window.getDeltaTime());
-	world.update(window.getDeltaTime());
-	if (world.doesPlayerCollide(player.pos))
+	if (player.isDead(world))
 	{
-		diedTime = glfwGetTime();
 		died = true;
+		diedTime = glfwGetTime();
 	}
-	if (world.doesPlayerCollect(player.pos))
+	if (player.doesCollect(world))
 		collectibles++;
+	world.update(window.getDeltaTime());
 }
 
 void	Game::keyHook()
 {
-	if (paused)
+	if (paused || died)
 		return ;
 
-	if (player.onGround && glfwGetKey(window.getWindowData(), GLFW_KEY_SPACE) == GLFW_PRESS)
+	if (!player.sneaking && player.onGround && glfwGetKey(window.getWindowData(), GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		player.timeFallStart = glfwGetTime();
-		player.velocity.y = 12;
+		player.velocity.y = 13;
 	}
 	if (glfwGetKey(window.getWindowData(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		player.sneaking = true;
@@ -102,7 +109,7 @@ void	Game::draw3D()
 	Shader	*meshShader = shaders.get("mesh");
 
 	skybox.draw(camera, *skyboxShader);
-
+	
 	if (!started)
 		return ;
     player.draw(*meshShader);

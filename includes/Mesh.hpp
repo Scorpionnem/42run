@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:47:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 15:28:29 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/05 12:38:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ class Mesh
 		std::map<std::string, MaterialGroup> materialGroups;
 		vec3	center;
 		std::string	path;
+		vec3	rotateIntensity;
 
 		float	rotateX = 0.0;
 		float	rotateY = 1.0;

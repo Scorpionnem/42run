@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:27:23 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 19:20:11 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/05 10:12:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define WORLD_HPP
 
 # include "Room.hpp"
+# include "Game.hpp"
 
 class   World
 {
@@ -21,7 +22,6 @@ class   World
         World()
         : speed(10.0f)
 		{
-			resetWorld();
 		}
 
 		void	resetWorld()
@@ -32,17 +32,14 @@ class   World
 			speed = 0;
 			int	offset = 0;
 	    	std::srand(glfwGetTime());
-			Mesh	*mesh;
 			for (int i = 0; i < 8; i++)
 			{
-				mesh = new Mesh();
-				mesh->loadOBJ("models/cube.obj", MISSING_TEXTURE);
-				rooms.push_back(new Room(mesh, vec3(0, 0, offset), Hardcoded, false));
+				rooms.push_back(new Room(NULL, vec3(0, 0, offset), Hardcoded));
 				offset -= 8;
 			}
 			
-			mesh = new Mesh();
-			mesh->loadOBJ("models/school_entrance.obj", MISSING_TEXTURE);
+			Mesh	*mesh;
+			mesh = g_meshManager->get("models/school_entrance.obj");
 			rooms.push_back(new Room(mesh, vec3(0, 0, offset), Hardcoded));
 		}
         ~World()
@@ -69,24 +66,6 @@ class   World
 		{
 			for (auto it = rooms.begin(); it != rooms.end(); it++)
 				(*it)->draw(shader);
-		}
-		bool	doesPlayerCollide(vec3 playerPos)
-		{
-			for (auto it = rooms.begin(); it != rooms.end(); it++)
-			{
-				if ((*it)->doesPlayerCollide(playerPos))
-					return (true);
-			}
-			return (false);
-		}
-		bool	doesPlayerCollect(vec3 playerPos)
-		{
-			for (auto it = rooms.begin(); it != rooms.end(); it++)
-			{
-				if ((*it)->doesPlayerCollect(playerPos))
-					return (true);
-			}
-			return (false);
 		}
 
 		float	speed;
@@ -152,9 +131,7 @@ class   World
 			if (type == Cafetaria)
 				texPath = "models/bricks.bmp";
 			
-    		Mesh* mesh = new Mesh();
-			mesh->loadOBJ(path, texPath);
-
+    		Mesh* mesh = g_meshManager->get(path, texPath);
 			vec3	tmp = rooms.back()->pos;
 			tmp.z -= 8;
     		Room* room = new Room(mesh, tmp, type);
