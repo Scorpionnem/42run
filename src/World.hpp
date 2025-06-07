@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:27:23 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 10:12:53 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:10:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class   World
 			rooms.clear();
 			speed = 0;
 			int	offset = 0;
+			speed = 10;
 	    	std::srand(glfwGetTime());
 			for (int i = 0; i < 8; i++)
 			{
@@ -50,7 +51,7 @@ class   World
 
 		void	update(float deltaTime)
 		{
-			speed = 10 + glfwGetTime() / 20;
+			speed += 1 * deltaTime / 16;
 			speed = clamp(speed, 5, 30);
     		for (auto it = rooms.begin(); it != rooms.end(); it++)
     		    (*it)->update(deltaTime, speed);

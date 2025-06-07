@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/04 21:31:29 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/06 12:13:09 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods)
 }
 
 MeshManager	*g_meshManager;
+ShaderManager	*g_shaderManager;
 
 int	main(void)
 {
@@ -85,6 +86,7 @@ int	main(void)
 		Game	game;
 		g_Game = &game;
 		g_meshManager = &game.meshManager;
+		g_shaderManager = &game.shaders;
 
 		while (game.window.up())
 		{

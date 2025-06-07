@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 21:45:21 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 11:23:26 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/06 12:13:31 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,13 @@ class AABB
 
 inline void	drawHitbox(Shader &shader, vec3 pos, vec3 size)
 {
+	(void)shader;
 	Mesh	*mesh = g_meshManager->get("models/cube.obj", "textures/mbatty.bmp");
 
 	mesh->pos = pos;
-	mesh->draw(shader, size);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	mesh->draw(*g_shaderManager->get("fullbright"), size);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 inline void resolveAABBCollision(AABB &player, const AABB &other)

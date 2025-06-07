@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 12:14:08 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/06 12:16:50 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Game::Game() : skybox({SKYBOX_PATHES})
 	shaders.load({"gui", GUI_VERT_SHADER, GUI_FRAG_SHADER});
 	shaders.load({"text", TEXT_VERT_SHADER, TEXT_FRAG_SHADER});
 	shaders.load({"skybox", SKYBOX_VERT_SHADER, SKYBOX_FRAG_SHADER});
+	shaders.load({"fullbright", MESH_VERT_SHADER, MESH_FULLBRIGHT_SHADER});
 	shaders.get("text")->use();
 	shaders.get("text")->setInt("tex0", 0);
     shaders.get("mesh")->use();
@@ -50,6 +51,7 @@ void	quitGame()
 		g_Game->bestDistance = g_Game->distance;
 	if (g_Game->collectibles > g_Game->bestCollecCount)
 		g_Game->bestCollecCount = g_Game->collectibles;
+	g_Game->totalDistance += g_Game->distance;
 	g_Game->distance = 0;
 	g_Game->collectibles = 0;
 	g_Game->pause();
@@ -63,17 +65,27 @@ void Game::logic()
 	camPitch = -15;
 	if (died && glfwGetTime() - diedTime > 1)
 		quitGame();
+	if (hasPowerup && glfwGetTime() - powerupTime > 2)
+		hasPowerup = false;
 	if (paused || died)
 		return ;
 	distance += world.speed * window.getDeltaTime();
 	player.update(window.getDeltaTime());
-	if (player.isDead(world))
+	if (!hasPowerup && player.isDead(world))
 	{
 		died = true;
 		diedTime = glfwGetTime();
 	}
 	if (player.doesCollect(world))
+	{
+		totalCollectibles++;
 		collectibles++;
+	}
+	if (player.doesGetPowerup(world))
+	{
+		hasPowerup = true;
+		powerupTime = glfwGetTime();
+	}
 	world.update(window.getDeltaTime());
 }
 
@@ -141,8 +153,13 @@ void	Game::drawUI()
 		Interface	*start = ui.get("start");
 		std::string	bestdistancemeter = "best distance: " + toString((int)bestDistance);
 		std::string	bestcollectiblesmeter = "best collectibles: " + toString((int)bestCollecCount);
-		font.putString(bestdistancemeter, *textShader, vec2((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 60), vec2(300, 50));
-		font.putString(bestcollectiblesmeter, *textShader, vec2((SCREEN_WIDTH / 2) - 150, (SCREEN_HEIGHT / 2) - 110), vec2(300, 50));
+		std::string	distancequest = "travel 1000 meters: " + toString((int)((totalDistance / 1000.f) * 100.f)) + "%";
+		std::string	collecquest = "collect 125 collectibles: " + toString((int)((totalCollectibles / 125.f) * 100.f)) + "%";
+		font.putString(bestdistancemeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 60), vec2(bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
+		font.putString(bestcollectiblesmeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 110), vec2(bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
+		font.putString(std::string("quests: "), *textShader, vec2((SCREEN_WIDTH / 2) - (std::string("quests: ").size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 140), vec2(std::string("quests: ").size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
+		font.putString(distancequest, *textShader, vec2((SCREEN_WIDTH / 2) - (distancequest.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 100), vec2(distancequest.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
+		font.putString(collecquest, *textShader, vec2((SCREEN_WIDTH / 2) - (collecquest.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 60), vec2(collecquest.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));	
 		start->buttons[0].pos = vec2((SCREEN_WIDTH / 2) - 100, 50);
 		start->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
 		start->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
@@ -153,8 +170,9 @@ void	Game::drawUI()
 
 	std::string	distancemeter = "distance: " + toString((int)distance);
 	std::string	collectiblesmeter = "collectibles: " + toString((int)collectibles);
-	font.putString(distancemeter, *textShader, vec2(0, 0), vec2(250, 50));
-	font.putString(collectiblesmeter, *textShader, vec2(0, 50), vec2(250, 50));
+	font.putString(distancemeter, *textShader, vec2(0, 0), vec2(distancemeter.size() * TERMINAL_CHAR_SIZE * 2, TERMINAL_CHAR_SIZE * 2));
+	font.putString(collectiblesmeter, *textShader, vec2(0, 50), vec2(collectiblesmeter.size() * TERMINAL_CHAR_SIZE * 2, TERMINAL_CHAR_SIZE * 2));
+
 	displayFPS();
     glEnable(GL_DEPTH_TEST);
 }
@@ -163,17 +181,21 @@ void	Game::setShaderValues()
 {
 	Shader	*textShader = shaders.get("text");
 	Shader	*meshShader = shaders.get("mesh");
+	Shader	*fullBrightShader = shaders.get("fullbright");
 
 	textShader->use();
 	textShader->setFloat("time", glfwGetTime());
 	textShader->setFloat("SCREEN_WIDTH", SCREEN_WIDTH);
 	textShader->setFloat("SCREEN_HEIGHT", SCREEN_HEIGHT);
-	textShader->setVec3("color", vec3(1.0, 1.0, 1.0));
+	textShader->setVec3("color", vec3(0.1, 1.0, 0.2));
+	textShader->setBool("rainbow", hasPowerup);
 	meshShader->use();
 	meshShader->setVec3("viewPos", camPos);
 	meshShader->setFloat("time", glfwGetTime());
 	meshShader->setFloat("ambientStrength", 0.5);
 	camera.setViewMatrix(*meshShader);
+	fullBrightShader->use();
+	camera.setViewMatrix(*fullBrightShader);
 }
 
 void	Game::displayFPS()

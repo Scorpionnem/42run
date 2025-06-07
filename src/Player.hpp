@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:00:22 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 12:34:43 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/05 14:33:01 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,19 @@ class   Player
 
             for (auto roomIt = world.rooms.begin(); roomIt != world.rooms.end(); roomIt++)
                 for (auto it = (*roomIt)->collectibles.begin(); it != (*roomIt)->collectibles.end(); it++)
+                    if (doesCollide(playerHitbox, AABB((*roomIt)->pos + it->offset, it->hitboxSize)) && it->draw)
+                    {
+                        it->draw = false;
+                        return (true);
+                    }
+            return (false);
+        }
+        bool    doesGetPowerup(World &world)
+        {
+            AABB playerHitbox(pos, hitboxSize);
+
+            for (auto roomIt = world.rooms.begin(); roomIt != world.rooms.end(); roomIt++)
+                for (auto it = (*roomIt)->powerups.begin(); it != (*roomIt)->powerups.end(); it++)
                     if (doesCollide(playerHitbox, AABB((*roomIt)->pos + it->offset, it->hitboxSize)) && it->draw)
                     {
                         it->draw = false;
