@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:00:22 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 23:47:12 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 00:43:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class   Player
         }
         void    load()
         {
-            mesh = CHARACTER_MANAGER->current->mesh;
-            sneakmesh = CHARACTER_MANAGER->current->sneakMesh;
+            mesh = CHARACTER_MANAGER->getEquipped()->mesh;
+            sneakmesh = CHARACTER_MANAGER->getEquipped()->sneakMesh;
             mesh->pos = pos;
             sneakmesh->pos = pos;
         }

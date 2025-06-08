@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:59:58 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 23:49:40 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 00:44:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,15 @@ class	CharacterManager
 			for (auto *character : characters)
 				character->equipped = false;
 			current->equipped = true;
+		}
+		Character	*getEquipped(void)
+		{
+			if (current->equipped)
+				return (current);
+			for (auto *character : characters)
+				if (character->equipped)
+					return (character);
+			return (NULL);
 		}
 
 		std::array<Character *, MAX_CHARACTER>	characters;
