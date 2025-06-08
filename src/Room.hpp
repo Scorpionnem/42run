@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:31:26 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 12:28:26 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 01:34:22 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,6 @@ class	Room
 				if (!canSpawn(AABB(obPos, obstacles.back().hitboxSize)))
 					obstacles.pop_back();
 			}
-			if (model && rand() % 4 == 1)
-			{
-				obstacles.push_back({MESH_MANAGER->get("models/bar_horizontal.obj"), vec3(10, 1, 1), vec3(0, rand() % 30 / 10.f, -2), vec3(1, 1, 1), true});
-				obPos = this->pos + obstacles.back().offset; 
-				if (!canSpawn(AABB(obPos, obstacles.back().hitboxSize)))
-					obstacles.pop_back();
-			}
 			if (model && rand() % 2)
 			{
 				obstacles.push_back({MESH_MANAGER->get("models/cluster2cube.obj"), vec3(1, 1, 1), vec3(neg * rand() % 30 / 10.f, 0, 0), vec3(1, 1, 1), true});
@@ -95,7 +88,14 @@ class	Room
 			}
 			if (model && rand() % 2)
 			{
-				obstacles.push_back({MESH_MANAGER->get("models/cluster2cube.obj"), vec3(1, 1, 1), vec3(neg * rand() % 30 / 10.f, 0, -2), vec3(1, 1, 1), true});
+				obstacles.push_back({MESH_MANAGER->get("models/cluster1post.obj"), vec3(3, 1, 1), vec3(neg * rand() % 30 / 10.f, 0, -2), vec3(1, 1, 1), true});
+				obPos = this->pos + obstacles.back().offset; 
+				if (!canSpawn(AABB(obPos, obstacles.back().hitboxSize)))
+					obstacles.pop_back();
+			}
+			if (model && rand() % 2)
+			{
+				obstacles.push_back({MESH_MANAGER->get("models/cluster1post.obj"), vec3(3, 1, 1), vec3(neg * rand() % 30 / 10.f, 0, -2), vec3(1, 1, 1), true});
 				obPos = this->pos + obstacles.back().offset; 
 				if (!canSpawn(AABB(obPos, obstacles.back().hitboxSize)))
 					obstacles.pop_back();

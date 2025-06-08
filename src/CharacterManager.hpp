@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:59:58 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:44:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 01:23:59 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,17 @@ class	CharacterManager
 				{
 					case SCORPIONEM:
 					{
-						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/scorpionem/scorpionem.obj"), MESH_MANAGER->get("models/scorpionem/scorpionem.obj"));
+						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/scorpionem/scorpionem.obj"), MESH_MANAGER->get("models/scorpionem/scorpionem_sneak.obj"));
 						break ;
 					}
 					case ELEO:
 					{
-						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/mix/mix.obj"), MESH_MANAGER->get("models/mix/mix.obj"));
+						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/eleo.obj"), MESH_MANAGER->get("models/eleo_sneak.obj"));
 						break;
 					}
 					case THEWORFER27:
 					{
-						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/scorpionem/scorpionem.obj"), MESH_MANAGER->get("models/scorpionem/scorpionem.obj"));
+						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/theworfer27/theworfer27.obj"), MESH_MANAGER->get("models/theworfer27/theworfer27_sneak.obj"));
 						break;
 					}
 					default:
