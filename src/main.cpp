@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 15:28:23 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:13:35 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,19 +208,24 @@ int	main(void)
 		Interface	*questsInterface = new Interface();
 		Interface	*cosmeticsInterface = new Interface(cosmeticInterfaceUpdate, NULL);
 
+		Interface	*deadInterface = new Interface();
+		deadInterface->elements.push_back(new Image(UIAnchor::TOP_LEFT, TEXTURE_MANAGER->get("textures/blackhole.bmp"), vec2(0), vec2(SCREEN_WIDTH, SCREEN_HEIGHT)));
+
 		skins.push_back(MESH_MANAGER->get("models/scorpionem/scorpionem.obj"));
 		skins.push_back(MESH_MANAGER->get("models/mix/mix.obj"));
 		currentSkin = skins.begin();
 
 		mainInterface->elements.push_back(new Image(UIAnchor::TOP_CENTER, TEXTURE_MANAGER->get(ICON_PATH), vec2(0, 75), vec2(200, 200)));
 
-		mainInterface->addButton(UIAnchor::CENTER_HALF_RIGHT, "cosmetics", vec2(85, 110), vec2(200, 100), gotoInterface, cosmeticsInterface);
+		mainInterface->addButton(UIAnchor::CENTER_HALF_RIGHT, "characters", vec2(85, 110), vec2(200, 100), gotoInterface, cosmeticsInterface);
 		mainInterface->addButton(UIAnchor::CENTER_HALF_LEFT, "powerups", vec2(-85, 110), vec2(200, 100), NULL, NULL);
 
 		mainInterface->addButton(UIAnchor::CENTER, "start", vec2(0, 0), vec2(350, 100), resetGame, NULL);
 		mainInterface->addButton(UIAnchor::CENTER, "quests", vec2(0, 110), vec2(350, 100), gotoInterface, questsInterface);
 		mainInterface->addButton(UIAnchor::CENTER, "options", vec2(-87.5, 220), vec2(170, 100), gotoInterface, optionsInterface);
 		mainInterface->addButton(UIAnchor::CENTER, "quit game", vec2(87.5, 220), vec2(170, 100), [](void *data){(void)data;glfwSetWindowShouldClose(GAME->window.getWindowData(), true);}, NULL);
+
+		mainInterface->elements.push_back(new Text(UIAnchor::CENTER, "best score: 69420", vec2(0, -120), vec2(std::string("best score: 69420").size() * 25, 25)));
 
 		optionsInterface->elements.push_back(new Text(UIAnchor::CENTER, "options", vec2(0, -225), vec2(200, 50)));
 
@@ -234,6 +239,15 @@ int	main(void)
 
 		optionsInterface->addButton(UIAnchor::BOTTOM_CENTER, "done", vec2(0, -75), vec2(350, 100), gotoInterface, mainInterface);
 
+		questsInterface->elements.push_back(new Text(UIAnchor::CENTER, "quests", vec2(0, -225), vec2(200, 50)));
+
+		questsInterface->addButton(UIAnchor::CENTER, "quest1", vec2(-205, -105), vec2(400, 100), NULL, NULL);
+		questsInterface->addButton(UIAnchor::CENTER, "quest2", vec2(-205, 0), vec2(400, 100), NULL, NULL);
+		questsInterface->addButton(UIAnchor::CENTER, "quest3", vec2(-205, 105), vec2(400, 100), NULL, NULL);
+
+		questsInterface->addButton(UIAnchor::CENTER, "quest4", vec2(205, -105), vec2(400, 100), NULL, NULL);
+		questsInterface->addButton(UIAnchor::CENTER, "quest5", vec2(205, 0), vec2(400, 100), NULL, NULL);
+		questsInterface->addButton(UIAnchor::CENTER, "quest6", vec2(205, 105), vec2(400, 100), NULL, NULL);
 		questsInterface->addButton(UIAnchor::BOTTOM_CENTER, "done", vec2(0, -75), vec2(350, 100), gotoInterface, mainInterface);
 
 		cosmeticsInterface->addButton(UIAnchor::BOTTOM_CENTER, "done", vec2(0, -75), vec2(350, 100), gotoInterface, mainInterface);
@@ -259,14 +273,19 @@ int	main(void)
 			game.drawUI();
 
 			glDisable(GL_DEPTH_TEST);
-			if (currentInterface)
+			if (!GAME->started && currentInterface)
 			{
 				currentInterface->update();
 				currentInterface->draw();
 			}
+			if (GAME->died)
+				deadInterface->draw();
 			glEnable(GL_DEPTH_TEST);
-
-			GAME->camera.pitch = 0;
+			
+			if (!GAME->started)
+				GAME->camera.pitch = 0;
+			else
+				GAME->camera.pitch = -15;
 			
 			//Swaps buffers and get key actions
 			game.keyHook();

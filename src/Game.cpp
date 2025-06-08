@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 14:13:13 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 15:51:03 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,19 +130,7 @@ void	Game::draw3D()
 
 void	Game::drawUI()
 {
-	Shader	*textShader = shaders.get("text");
-	// Shader	*guiShader = shaders.get("gui");
-
     glDisable(GL_DEPTH_TEST);
-
-	if (died)
-		font.putString("you died", *textShader, vec2(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 50), vec2(300, 100));
-
-	std::string	distancemeter = "distance: " + toString((int)distance);
-	std::string	collectiblesmeter = "collectibles: " + toString((int)collectibles);
-	font.putString(distancemeter, *textShader, vec2(0, 0), vec2(distancemeter.size() * TERMINAL_CHAR_SIZE * 2, TERMINAL_CHAR_SIZE * 2));
-	font.putString(collectiblesmeter, *textShader, vec2(0, 50), vec2(collectiblesmeter.size() * TERMINAL_CHAR_SIZE * 2, TERMINAL_CHAR_SIZE * 2));
-
 	displayFPS();
     glEnable(GL_DEPTH_TEST);
 }
