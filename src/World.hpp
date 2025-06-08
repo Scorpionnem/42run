@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:27:23 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 14:10:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 12:28:26 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class   World
 			}
 			
 			Mesh	*mesh;
-			mesh = g_meshManager->get("models/school_entrance.obj");
+			mesh = MESH_MANAGER->get("models/school_entrance.obj");
 			rooms.push_back(new Room(mesh, vec3(0, 0, offset), Hardcoded));
 		}
         ~World()
@@ -132,7 +132,7 @@ class   World
 			if (type == Cafetaria)
 				texPath = "models/bricks.bmp";
 			
-    		Mesh* mesh = g_meshManager->get(path, texPath);
+    		Mesh* mesh = MESH_MANAGER->get(path, texPath);
 			vec3	tmp = rooms.back()->pos;
 			tmp.z -= 8;
     		Room* room = new Room(mesh, tmp, type);

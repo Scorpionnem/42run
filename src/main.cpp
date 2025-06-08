@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 02:32:44 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 15:28:23 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,16 @@ std::string	toString(float nbr)
 	return (strs.str());
 }
 
-Game	*g_Game;
+Game	*GAME;
 
 void	resumeGame()
 {
-	g_Game->resume();
+	GAME->resume();
 }
 
 void	closeWindow()
 {
-	glfwSetWindowShouldClose(g_Game->window.getWindowData(), true);
+	glfwSetWindowShouldClose(GAME->window.getWindowData(), true);
 }
 
 void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -67,19 +67,20 @@ void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods)
 	{
 		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
-		if (g_Game->paused)
-			g_Game->resume();
+		if (GAME->paused)
+			GAME->resume();
 		else
-			g_Game->pause();
+			GAME->pause();
 	}
-	if (g_Game->paused)
+	if (GAME->paused)
 		return ;
 }
 
-MeshManager	*g_meshManager;
-ShaderManager	*g_shaderManager;
+MeshManager	*MESH_MANAGER;
+ShaderManager	*SHADER_MANAGER;
+TextureManager	*TEXTURE_MANAGER;
 
-#include "AButton.hpp"
+#include "UIElement.hpp"
 
 void	test(void *ptr)
 {
@@ -89,11 +90,11 @@ void	test(void *ptr)
 void	resetGame(void *ptr)
 {
 	(void)ptr;
-	g_Game->world.resetWorld();
-	g_Game->player.pos = vec3(0);
-	g_Game->player.velocity = vec3(0);
-	g_Game->started = true;
-	g_Game->camera.yaw = -90;
+	GAME->world.resetWorld();
+	GAME->player.pos = vec3(0);
+	GAME->player.velocity = vec3(0);
+	GAME->started = true;
+	GAME->camera.yaw = -90;
 	resumeGame();
 }
 
@@ -103,34 +104,144 @@ void	sliderTest(float val, void *ptr)
 	std::cout << val << std::endl;
 }
 
+class	Interface
+{
+	public:
+		Interface(){}
+		Interface(std::function<void(void*)> onUpdate, void *updateData)
+		{
+			this->onUpdate = onUpdate;
+			this->updateData = updateData;
+		}
+		~Interface()
+		{
+			for (auto *element : elements)
+				delete element;
+		}
+
+		void	addButton(UIAnchor anchor, std::string label, vec2 offset, vec2 size, std::function<void(void*)> onClick, void *clickData)
+		{
+			elements.push_back(new Button(anchor, label, offset, size, onClick, clickData));
+		}
+		void	addButton(std::string label, vec2 pos, vec2 size, std::function<void(void*)> onClick, void *clickData)
+		{
+			elements.push_back(new Button(label, pos, size, onClick, clickData));
+		}
+		void	addSlider(UIAnchor anchor, std::string label, vec2 offset, vec2 size, std::function<void(float, void*)> onClick, void *clickData)
+		{
+			elements.push_back(new Slider(anchor, label, offset, size, onClick, clickData));
+		}
+		void	addSlider(std::string label, vec2 pos, vec2 size, std::function<void(float, void*)> onClick, void *clickData)
+		{
+			elements.push_back(new Slider(label, pos, size, onClick, clickData));
+		}
+
+		void	draw()
+		{
+			for (auto *element : elements)
+				element->draw();
+		}
+		void	update()
+		{
+			if (onUpdate)
+				onUpdate(updateData);
+			double mouseX, mouseY;
+			bool mousePressed = glfwGetMouseButton(GAME->window.getWindowData(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+			glfwGetCursorPos(GAME->window.getWindowData(), &mouseX, &mouseY);
+			for (auto *element : elements)
+				element->update(vec2(mouseX, mouseY), mousePressed);
+		}
+		std::vector<UIElement *>	elements;
+		std::function<void(void*)>	onUpdate = NULL;
+		void						*updateData = NULL;
+};
+
+Interface	*currentInterface;
+
+void	gotoInterface(void *data)
+{
+	currentInterface = static_cast<Interface *>(data);
+}
+
+std::vector<Mesh *>				skins;
+std::vector<Mesh *>::iterator	currentSkin;
+
+void	cosmeticInterfaceUpdate(void *data)
+{
+	vec3	direction;
+	direction.x = cos(toRadians(GAME->camera.yaw)) * cos(toRadians(GAME->camera.pitch));
+	direction.y = sin(toRadians(GAME->camera.pitch));
+	direction.z = sin(toRadians(GAME->camera.yaw)) * cos(toRadians(GAME->camera.pitch));
+	vec3 front = direction.normalize();
+	front.y += 0.1;
+
+	(void)data;
+	glEnable(GL_DEPTH_TEST);
+	GAME->player.load();
+	GAME->player.mesh->pos = GAME->camera.pos + front * 4;
+	GAME->player.mesh->draw(*SHADER_MANAGER->get("mesh"));
+	glDisable(GL_DEPTH_TEST);
+}
+
+void	cosmeticInterfaceNext(void *data)
+{
+	(void)data;
+}
+
+void	cosmeticInterfacePrevious(void *data)
+{
+	(void)data;
+}
+
 int	main(void)
 {
 	try {
 		
 		Game	game;
-		g_Game = &game;
-		g_meshManager = &game.meshManager;
-		g_shaderManager = &game.shaders;
+		GAME = &game;
+		MESH_MANAGER = &game.meshManager;
+		SHADER_MANAGER = &game.shaders;
+		TEXTURE_MANAGER = &game.textures;
 
-		std::vector<AButton *>	buttons;
-		buttons.push_back(new xButton(UIAnchor::TOP_CENTER, "", vec2(0, 75), vec2(200, 200), test, NULL));
+		Interface	*mainInterface = new Interface();
+		Interface	*optionsInterface = new Interface();
+		Interface	*questsInterface = new Interface();
+		Interface	*cosmeticsInterface = new Interface(cosmeticInterfaceUpdate, NULL);
 
-		buttons.push_back(new xButton(UIAnchor::CENTER_HALF_RIGHT, "cosmetics", vec2(85, 110), vec2(200, 100), test, &game));
-		buttons.push_back(new xButton(UIAnchor::CENTER_HALF_LEFT, "powerups", vec2(-85, 110), vec2(200, 100), test, &game));
+		skins.push_back(MESH_MANAGER->get("models/scorpionem/scorpionem.obj"));
+		skins.push_back(MESH_MANAGER->get("models/mix/mix.obj"));
+		currentSkin = skins.begin();
 
-		buttons.push_back(new xButton(UIAnchor::CENTER, "start", vec2(0, 0), vec2(350, 100), resetGame, NULL));
-		buttons.push_back(new xButton(UIAnchor::CENTER, "quests", vec2(0, 110), vec2(350, 100), test, &game));
-		buttons.push_back(new xButton(UIAnchor::CENTER, "options", vec2(-87.5, 220), vec2(170, 100), test, &game));
-		buttons.push_back(new xButton(UIAnchor::CENTER, "quit game", vec2(87.5, 220), vec2(170, 100), test, &game));
+		mainInterface->elements.push_back(new Image(UIAnchor::TOP_CENTER, TEXTURE_MANAGER->get(ICON_PATH), vec2(0, 75), vec2(200, 200)));
 
-		for (auto *button : buttons)
-		{
-			button->setAssets(new Texture(BUTTON_PATH), new Texture(BUTTON_PRESSED_PATH), g_shaderManager->get("gui"), g_shaderManager->get("text"), &game.font);
-			if (xSlider* slider = dynamic_cast<xSlider*>(button))
-				slider->setAssets(NULL, NULL, new Texture(SLIDER_BG_PATH), 0, NULL, NULL, NULL);
-		}
+		mainInterface->addButton(UIAnchor::CENTER_HALF_RIGHT, "cosmetics", vec2(85, 110), vec2(200, 100), gotoInterface, cosmeticsInterface);
+		mainInterface->addButton(UIAnchor::CENTER_HALF_LEFT, "powerups", vec2(-85, 110), vec2(200, 100), NULL, NULL);
 
-		buttons[0]->setAssets(new Texture(ICON_PATH), new Texture(BUTTON_PRESSED_PATH), g_shaderManager->get("gui"), g_shaderManager->get("text"), &game.font);
+		mainInterface->addButton(UIAnchor::CENTER, "start", vec2(0, 0), vec2(350, 100), resetGame, NULL);
+		mainInterface->addButton(UIAnchor::CENTER, "quests", vec2(0, 110), vec2(350, 100), gotoInterface, questsInterface);
+		mainInterface->addButton(UIAnchor::CENTER, "options", vec2(-87.5, 220), vec2(170, 100), gotoInterface, optionsInterface);
+		mainInterface->addButton(UIAnchor::CENTER, "quit game", vec2(87.5, 220), vec2(170, 100), [](void *data){(void)data;glfwSetWindowShouldClose(GAME->window.getWindowData(), true);}, NULL);
+
+		optionsInterface->elements.push_back(new Text(UIAnchor::CENTER, "options", vec2(0, -225), vec2(200, 50)));
+
+		optionsInterface->addSlider(UIAnchor::CENTER, "fov", vec2(-205, -105), vec2(400, 100), sliderTest, NULL);
+		optionsInterface->addButton(UIAnchor::CENTER, "video settings", vec2(-205, 0), vec2(400, 100), NULL, NULL);
+		optionsInterface->addButton(UIAnchor::CENTER, "resource pack", vec2(-205, 105), vec2(400, 100), NULL, NULL);
+
+		optionsInterface->addButton(UIAnchor::CENTER, "controls", vec2(205, -105), vec2(400, 100), NULL, NULL);
+		optionsInterface->addButton(UIAnchor::CENTER, "wip", vec2(205, 0), vec2(400, 100), NULL, NULL);
+		optionsInterface->addButton(UIAnchor::CENTER, "game options", vec2(205, 105), vec2(400, 100), NULL, NULL);
+
+		optionsInterface->addButton(UIAnchor::BOTTOM_CENTER, "done", vec2(0, -75), vec2(350, 100), gotoInterface, mainInterface);
+
+		questsInterface->addButton(UIAnchor::BOTTOM_CENTER, "done", vec2(0, -75), vec2(350, 100), gotoInterface, mainInterface);
+
+		cosmeticsInterface->addButton(UIAnchor::BOTTOM_CENTER, "done", vec2(0, -75), vec2(350, 100), gotoInterface, mainInterface);
+		cosmeticsInterface->addButton(UIAnchor::BOTTOM_CENTER, "buy", vec2(0, -180), vec2(200, 100), NULL, NULL);
+		cosmeticsInterface->addButton(UIAnchor::CENTER_HALF_LEFT, "previous", vec2(0, 0), vec2(200, 100), cosmeticInterfacePrevious, NULL);
+		cosmeticsInterface->addButton(UIAnchor::CENTER_HALF_RIGHT, "next", vec2(0, 0), vec2(200, 100), cosmeticInterfaceNext, NULL);
+
+		currentInterface = mainInterface;
 
 		while (game.window.up())
 		{
@@ -147,18 +258,16 @@ int	main(void)
 			//2D Objects drawing
 			game.drawUI();
 
-			double mouseX, mouseY;
-			bool mousePressed = glfwGetMouseButton(game.window.getWindowData(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-			glfwGetCursorPos(game.window.getWindowData(), &mouseX, &mouseY);
-
 			glDisable(GL_DEPTH_TEST);
-			for (auto *button : buttons)
+			if (currentInterface)
 			{
-				button->update(vec2(mouseX, mouseY), mousePressed);
-				button->draw();
+				currentInterface->update();
+				currentInterface->draw();
 			}
 			glEnable(GL_DEPTH_TEST);
 
+			GAME->camera.pitch = 0;
+			
 			//Swaps buffers and get key actions
 			game.keyHook();
 			game.window.loopEnd();

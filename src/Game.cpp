@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 02:09:46 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 14:13:13 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,18 @@ Game::~Game()
 
 void	quitGame()
 {
-	g_Game->started = false;
-	g_Game->diedTime = 0;
-	g_Game->died = false;
-	g_Game->world.speed = 10;
-	if (g_Game->distance > g_Game->bestDistance)
-		g_Game->bestDistance = g_Game->distance;
-	if (g_Game->collectibles > g_Game->bestCollecCount)
-		g_Game->bestCollecCount = g_Game->collectibles;
-	g_Game->totalDistance += g_Game->distance;
-	g_Game->distance = 0;
-	g_Game->collectibles = 0;
-	g_Game->pause();
+	GAME->started = false;
+	GAME->diedTime = 0;
+	GAME->died = false;
+	GAME->world.speed = 10;
+	if (GAME->distance > GAME->bestDistance)
+		GAME->bestDistance = GAME->distance;
+	if (GAME->collectibles > GAME->bestCollecCount)
+		GAME->bestCollecCount = GAME->collectibles;
+	GAME->totalDistance += GAME->distance;
+	GAME->distance = 0;
+	GAME->collectibles = 0;
+	GAME->pause();
 }
 
 void Game::logic()
@@ -138,36 +138,6 @@ void	Game::drawUI()
 	if (died)
 		font.putString("you died", *textShader, vec2(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 - 50), vec2(300, 100));
 
-	if (paused && started)
-	{
-        //Centers the pause interface
-		Interface	*pause = ui.get("pause");
-		pause->buttons[0].pos = vec2((SCREEN_WIDTH / 2) - 100, 50);
-		pause->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
-		pause->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
-		pause->buttons[3].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 160);
-		// ui.draw("pause", window.getWindowData(), *guiShader, font, *textShader);
-	}
-	if (!started)
-	{
-		Interface	*start = ui.get("start");
-		std::string	bestdistancemeter = "best distance: " + toString((int)bestDistance);
-		std::string	bestcollectiblesmeter = "best collectibles: " + toString((int)bestCollecCount);
-		std::string	distancequest = "travel 1000 meters: " + toString((int)((totalDistance / 1000.f) * 100.f)) + "%";
-		std::string	collecquest = "collect 125 collectibles: " + toString((int)((totalCollectibles / 125.f) * 100.f)) + "%";
-		font.putString(bestdistancemeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 100), vec2(bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
-		font.putString(bestcollectiblesmeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 140), vec2(bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
-		font.putString(std::string("quests: "), *textShader, vec2((SCREEN_WIDTH / 2) - (std::string("quests: ").size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 140), vec2(std::string("quests: ").size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
-		font.putString(distancequest, *textShader, vec2((SCREEN_WIDTH / 2) - (distancequest.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 100), vec2(distancequest.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
-		font.putString(collecquest, *textShader, vec2((SCREEN_WIDTH / 2) - (collecquest.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 60), vec2(collecquest.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));	
-		start->buttons[0].pos = vec2((SCREEN_WIDTH / 2) - 100, 50);
-		start->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
-		start->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
-		// ui.draw("start", window.getWindowData(), *guiShader, font, *textShader);
-		camera.yaw += 4 * window.getDeltaTime();
-		return ;
-	}
-
 	std::string	distancemeter = "distance: " + toString((int)distance);
 	std::string	collectiblesmeter = "collectibles: " + toString((int)collectibles);
 	font.putString(distancemeter, *textShader, vec2(0, 0), vec2(distancemeter.size() * TERMINAL_CHAR_SIZE * 2, TERMINAL_CHAR_SIZE * 2));
@@ -187,7 +157,7 @@ void	Game::setShaderValues()
 	textShader->setFloat("time", glfwGetTime());
 	textShader->setFloat("SCREEN_WIDTH", SCREEN_WIDTH);
 	textShader->setFloat("SCREEN_HEIGHT", SCREEN_HEIGHT);
-	textShader->setVec3("color", vec3(0.1, 1.0, 0.2));
+	textShader->setVec3("color", vec3(1, 1, 1));
 	textShader->setBool("rainbow", hasPowerup);
 	meshShader->use();
 	meshShader->setVec3("viewPos", camera.pos);
@@ -209,24 +179,14 @@ void	Game::displayFPS()
 
 void	resetGame()
 {
-	g_Game->world.resetWorld();
-	g_Game->player.pos = vec3(0);
-	g_Game->player.velocity = vec3(0);
-	g_Game->started = true;
-	g_Game->camera.yaw = -90;
+	GAME->world.resetWorld();
+	GAME->player.pos = vec3(0);
+	GAME->player.velocity = vec3(0);
+	GAME->started = true;
+	GAME->camera.yaw = -90;
 	resumeGame();
 }
 
 void	Game::loadUIs()
 {
-	//Loads pause interface
-	ui.createInterface("pause");
-	ui.addButtonToInterface("pause", Button("", 200, 200, vec2((SCREEN_WIDTH / 2) - 100, 50), do_nothing, ui.iconTexture, ui.iconTexture));
-	ui.addButtonToInterface("pause", Button("resume", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80), resumeGame, ui.buttonTexture, ui.buttonPressedTexture));
-	ui.addButtonToInterface("pause", Button("stop", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 240), quitGame, ui.buttonTexture, ui.buttonPressedTexture));
-
-	ui.createInterface("start");
-	ui.addButtonToInterface("start", Button("", 200, 200, vec2((SCREEN_WIDTH / 2) - 100, 50), do_nothing, ui.iconTexture, ui.iconTexture));
-	ui.addButtonToInterface("start", Button("start", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) - 80), resetGame, ui.buttonTexture, ui.buttonPressedTexture));
-	ui.addButtonToInterface("start", Button("quit", 250, 75, vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80), closeWindow, ui.buttonTexture, ui.buttonPressedTexture));
 }

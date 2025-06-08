@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:00:22 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 14:33:01 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 14:37:06 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class   Player
         }
         void    load()
         {
-            mesh = g_meshManager->get("models/scorpionem/scorpionem.obj");
-            sneakmesh = g_meshManager->get("models/scorpionem/scorpionem.obj");
+            mesh = MESH_MANAGER->get("models/scorpionem/scorpionem.obj");
+            sneakmesh = MESH_MANAGER->get("models/scorpionem/scorpionem.obj");
             mesh->pos = pos;
             sneakmesh->pos = pos;
         }

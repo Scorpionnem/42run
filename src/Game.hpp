@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:14:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/07 22:35:43 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 12:44:41 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,17 @@ void	resumeGame();
 void	closeWindow();
 # include "MeshManager.hpp"
 # include "ShaderManager.hpp"
+# include "TextureManager.hpp"
 
-extern MeshManager	*g_meshManager;
-extern ShaderManager	*g_shaderManager;
+extern MeshManager	*MESH_MANAGER;
+extern ShaderManager	*SHADER_MANAGER;
+extern TextureManager	*TEXTURE_MANAGER;
 
 # include "libs.hpp"
 # include "Window.hpp"
 # include "Skybox.hpp"
-# include "Interface.hpp"
 # include "Mesh.hpp"
 # include "Player.hpp"
-
-# include "UIManager.hpp"
 
 # include "World.hpp"
 
@@ -58,8 +57,8 @@ class	Game
 
 		std::string	fps = "0 fps";
 
+		TextureManager	textures;
 		ShaderManager	shaders;
-		UIManager		ui;
 		MeshManager		meshManager;
         World           world;
         Player          player;
@@ -82,7 +81,7 @@ class	Game
 		double	powerupTime = 0;
 };
 
-extern Game	*g_Game;
+extern Game	*GAME;
 
 inline  void    Game::resume()
 {

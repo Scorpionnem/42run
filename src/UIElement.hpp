@@ -1,22 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AButton.hpp                                        :+:      :+:    :+:   */
+/*   UIElement.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/07 22:36:31 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 02:35:54 by mbatty           ###   ########.fr       */
+/*   Created: 2025/06/08 12:42:04 by mbatty            #+#    #+#             */
+/*   Updated: 2025/06/08 14:18:31 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ABUTTON_HPP
-# define ABUTTON_HPP
+#ifndef UIELEMENT_HPP
+# define UIELEMENT_HPP
 
-# include "libs.hpp"
-# include "Texture.hpp"
-# include "Shader.hpp"
-# include "Font.hpp"
+# include "Game.hpp"
+
+# define DEFAULT_BUTTON_TEXTURE BUTTON_PATH
+# define DEFAULT_BUTTON_CLICK_TEXTURE BUTTON_PRESSED_PATH
+# define DEFAULT_SLIDER_BACKGROUND_TEXTURE SLIDER_BG_PATH
+
+# define DEFAULT_BUTTON_SHADER "gui"
 
 extern unsigned int	quadVAO;
 extern unsigned int	quadVBO;
@@ -37,11 +40,11 @@ enum UIAnchor
 	CENTER_HALF_RIGHT //Anchored on the half right of the screen
 };
 
-class	AButton
+class	UIElement
 {
 	public:
-		AButton(){}
-		~AButton(){}
+		UIElement(){}
+		virtual ~UIElement(){}
 		/*
 			Draws the button, expects GL_DEPTH_TEST to be disabled so please use this function in drawUI
 		*/
@@ -52,7 +55,6 @@ class	AButton
 			Updates button's variables like its current used texture (normal/pressed)
 		*/
         virtual void	update(vec2 mousePos, bool mousePressed) = 0;
-		virtual void	setAssets(Texture *texture, Texture *clickTexture, Shader *buttonShader, Shader *fontShader, Font *font) = 0;
 	protected:
 		/*
 			Returns wether the mouse is in the button or not
@@ -165,7 +167,7 @@ class	AButton
 
 	When initialized the button will use basic textures/shaders from the Texture/ShaderManager, use the setter functions to use custom shaders
 */
-class	xButton : public AButton
+class	Button : public UIElement
 {
 	public:
 		/*
@@ -180,13 +182,15 @@ class	xButton : public AButton
 			@param	onClick     function to be called when button is clicked
 			@param	clickData   Data passed to the onClick function
 		*/
-		xButton(std::string label, vec2 pos, vec2 size, std::function<void(void*)> onClick, void *clickData)
+		Button(std::string label, vec2 pos, vec2 size, std::function<void(void*)> onClick, void *clickData)
 		{
 			this->label = label;
 			this->pos = pos;
 			this->size = size;
 			this->onClick = onClick;
 			this->clickData = clickData;
+
+			loadDefaultAssets();
 		}
 		/*
 			@brief	Simple anchored button
@@ -201,7 +205,7 @@ class	xButton : public AButton
 			@param	onClick     function to be called when button is clicked, NULL to do nothing
 			@param	clickData   Data passed to the onClick function
 		*/
-		xButton(UIAnchor anchor, std::string label, vec2 offset, vec2 size, std::function<void(void*)> onClick, void *clickData)
+		Button(UIAnchor anchor, std::string label, vec2 offset, vec2 size, std::function<void(void*)> onClick, void *clickData)
 		{
 			this->label = label;
 			this->offset = offset;
@@ -210,8 +214,19 @@ class	xButton : public AButton
 			this->onClick = onClick;
 			this->clickData = clickData;
 			this->anchor = anchor;
+
+			loadDefaultAssets();
 		}
-		~xButton(){}
+		~Button(){}
+		void	loadDefaultAssets()
+		{
+			this->texture = TEXTURE_MANAGER->get(DEFAULT_BUTTON_TEXTURE);
+			this->clickTexture = TEXTURE_MANAGER->get(DEFAULT_BUTTON_CLICK_TEXTURE);
+
+			this->fontShader = SHADER_MANAGER->get("text");
+			this->buttonShader = SHADER_MANAGER->get("gui");
+			this->font = &GAME->font;
+		}
 		// Sets custom button assets, if argument is NULL, asset wont be set
 		void	setAssets(Texture *texture, Texture *clickTexture, Shader *buttonShader, Shader *fontShader, Font *font)
 		{
@@ -230,10 +245,7 @@ class	xButton : public AButton
 		void	draw()
 		{
 			if (!this->buttonShader || !this->currentTexture)
-			{
-				std::cout << "Returnin" << std::endl;
 				return ;
-			}
 			
 			initButtonQuad();
 			
@@ -302,22 +314,24 @@ class	xButton : public AButton
 
 	When initialized the slider will use basic textures/shaders from the Texture/ShaderManager, use the setter functions to use custom shaders
 */
-class	xSlider : public AButton
+class	Slider : public UIElement
 {
 	public:
 		/*
 		*/
-		xSlider(std::string label, vec2 pos, vec2 size, std::function<void(float, void*)> onChange, void *clickData)
+		Slider(std::string label, vec2 pos, vec2 size, std::function<void(float, void*)> onChange, void *clickData)
 		{
 			this->label = label;
 			this->pos = pos;
 			this->size = size;
 			this->onChange = onChange;
 			this->clickData = clickData;
+
+			loadDefaultAssets();
 		}
 		/*
 		*/
-		xSlider(UIAnchor anchor, std::string label, vec2 offset, vec2 size, std::function<void(float, void*)> onChange, void *clickData)
+		Slider(UIAnchor anchor, std::string label, vec2 offset, vec2 size, std::function<void(float, void*)> onChange, void *clickData)
 		{
 			this->label = label;
 			this->offset = offset;
@@ -326,8 +340,20 @@ class	xSlider : public AButton
 			this->onChange = onChange;
 			this->clickData = clickData;
 			this->anchor = anchor;
+
+			loadDefaultAssets();
 		}
-		~xSlider(){}
+		~Slider(){}
+		void	loadDefaultAssets()
+		{
+			this->texture = TEXTURE_MANAGER->get(DEFAULT_BUTTON_TEXTURE);
+			this->clickTexture = TEXTURE_MANAGER->get(DEFAULT_BUTTON_CLICK_TEXTURE);
+			this->backgroundTexture = TEXTURE_MANAGER->get(DEFAULT_SLIDER_BACKGROUND_TEXTURE);
+
+			this->fontShader = SHADER_MANAGER->get("text");
+			this->buttonShader = SHADER_MANAGER->get("gui");
+			this->font = &GAME->font;
+		}
 		void	setAssets(Texture *texture, Texture *clickTexture, Shader *buttonShader, Shader *fontShader, Font *font)
 		{
 			if (texture)
@@ -361,19 +387,16 @@ class	xSlider : public AButton
 		void	draw()
 		{
 			if (!this->buttonShader || !this->currentTexture || !this->backgroundTexture)
-			{
-				std::cout << "Returnin" << std::endl;
 				return ;
-			}
-			
+
 			initButtonQuad();
-			
+
 			mat4 model = translate(mat4(1.0f), vec3(this->pos.x, this->pos.y, 0.0f));
 			model = scale(model, vec3(this->size.x, this->size.y, 1.0f));
 
 			mat4 sliderModel = translate(mat4(1.0f), vec3(this->sliderPos.x, this->sliderPos.y, 0.0f));
 			sliderModel = scale(sliderModel, vec3(this->sliderWidth, this->size.y, 1.0f));
-			
+
 			mat4 projection = ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 
 			this->buttonShader->use();
@@ -467,6 +490,102 @@ class	xSlider : public AButton
 		Shader						*fontShader = NULL;
 		
 		Font						*font = NULL;
+};
+
+class	Text : public UIElement
+{
+	public:
+		Text()
+		{
+
+		}
+		~Text(){}
+		Text(UIAnchor anchor, std::string label, vec2 offset, vec2 size)
+		{
+			this->label = label;
+			this->offset = offset;
+			this->pos = vec2(0);
+			this->size = size;
+			this->anchor = anchor;
+
+			loadDefaultAssets();
+		}
+		void	loadDefaultAssets()
+		{
+			this->fontShader = SHADER_MANAGER->get("text");
+			this->font = &GAME->font;
+		}
+		void	draw()
+		{
+			if (!this->font || !this->fontShader)
+				return ;
+
+			font->putString(this->label, *this->fontShader, vec2(this->pos.x, this->pos.y - this->size.y / 8), this->size);
+		}
+		void	update(vec2 mousePos, bool mousePressed)
+		{
+			(void)mousePos;(void)mousePressed;
+			if (this->anchor != NONE)
+				anchorPos();
+		}
+		Shader						*fontShader = NULL;
+		Font						*font = NULL;
+
+		std::string					label;
+};
+
+class	Image : public UIElement
+{
+	public:
+		Image()
+		{
+
+		}
+		~Image(){}
+		Image(UIAnchor anchor, Texture *texture, vec2 offset, vec2 size)
+		{
+			this->offset = offset;
+			this->pos = vec2(0);
+			this->size = size;
+			this->anchor = anchor;
+			this->texture = texture;
+
+			loadDefaultAssets();
+		}
+		void	loadDefaultAssets()
+		{
+			if (!texture)
+				this->texture = TEXTURE_MANAGER->get(MBATTY_TX_PATH);
+			this->buttonShader = SHADER_MANAGER->get("gui");
+		}
+		void	draw()
+		{
+			if (!this->texture || !this->buttonShader)
+				return ;
+
+			initButtonQuad();
+
+			mat4 model = translate(mat4(1.0f), vec3(this->pos.x, this->pos.y, 0.0f));
+			model = scale(model, vec3(this->size.x, this->size.y, 1.0f));
+
+			mat4 projection = ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+
+			this->buttonShader->use();
+			this->buttonShader->setMat4("projection", projection);
+			
+			glBindVertexArray(quadVAO);
+			this->texture->use();
+			this->buttonShader->setMat4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+		void	update(vec2 mousePos, bool mousePressed)
+		{
+			(void)mousePos;(void)mousePressed;
+			if (this->anchor != NONE)
+				anchorPos();
+		}
+		Shader						*buttonShader = NULL;
+		Texture						*texture = NULL;
 };
 
 #endif

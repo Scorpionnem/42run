@@ -25,12 +25,9 @@ CPP_FILES :=	main \
 				Mesh \
 				Texture \
 				Light \
-				Button \
-				Slider \
-				Interface \
 				Font \
 				Skybox \
-				AButton \
+				UIElement \
 				Game
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))
@@ -47,10 +44,10 @@ GLAD_PATH = libs/glad
 all: glfw glad $(NAME)
 
 run: all
-	@./$(NAME) models/subject/teapot.obj textures/icon.bmp
+	@./$(NAME)
 
 vrun: all
-	@valgrind ./$(NAME) models/subject/42.obj textures/cobblestone.bmp
+	@valgrind ./$(NAME)
 
 glfw:
 	@if ls | grep -q "GLFW"; then \
