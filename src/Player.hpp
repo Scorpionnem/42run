@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:00:22 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:43:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 01:49:19 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ class   Player
             double timeSinceFall = glfwGetTime() - timeFallStart;
             float gravityMultiplier = timeSinceFall > 0.2f ? 1.5f : 1.0f;
 
-            velocity.y -= ((30 * gravityMultiplier) + (sneaking * 50)) * deltaTime;
+            if (CHARACTER_MANAGER->current->ID == ELEO)
+                velocity.y -= ((15 * gravityMultiplier) + (sneaking * 50)) * deltaTime;
+            else
+                velocity.y -= ((30 * gravityMultiplier) + (sneaking * 50)) * deltaTime;
 
             pos.y += velocity.y * deltaTime;
     
@@ -59,6 +62,8 @@ class   Player
                 velocity.y = 0;
                 pos.y = 0;
                 onGround = true;
+                if (CHARACTER_MANAGER->current->ID == THEWORFER27)
+                    doubleJump = true;
             }
         
             mesh->pos = pos;
@@ -121,6 +126,7 @@ class   Player
         bool    sneaking = false;
         double  timeSinceFall = 0;
         double  timeFallStart = 0;
+        bool    doubleJump = false;
 };
 
 #endif

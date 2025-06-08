@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:01:41 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 01:47:22 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,29 @@ void Game::logic()
 
 void	Game::keyHook()
 {
+	static bool prevSpacePressed = false;
+	bool spacePressed = glfwGetKey(window.getWindowData(), GLFW_KEY_SPACE) == GLFW_PRESS;
+
 	if (paused || died)
 		return ;
 
-	if (!player.sneaking && player.onGround && glfwGetKey(window.getWindowData(), GLFW_KEY_SPACE) == GLFW_PRESS)
+	bool spaceJustPressed = spacePressed && !prevSpacePressed;
+
+	std::cout << player.doubleJump << std::endl;
+	if (!player.sneaking && player.onGround && spacePressed)
 	{
 		player.timeFallStart = glfwGetTime();
 		player.velocity.y = 13;
 	}
+	else if (!player.sneaking && !player.onGround && player.doubleJump && spaceJustPressed)
+	{
+		player.timeFallStart = glfwGetTime();
+		player.velocity.y = 11;
+		player.doubleJump = false;
+	}
+
+	prevSpacePressed = spacePressed;
+	
 	if (glfwGetKey(window.getWindowData(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		player.sneaking = true;
 	else
