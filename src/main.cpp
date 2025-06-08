@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 02:07:07 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 02:32:44 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "Game.hpp"
 
 float	FOV = 65;
-float	SCREEN_WIDTH = 1000;
+float	SCREEN_WIDTH = 1100;
 float	SCREEN_HEIGHT = 900;
 float	RENDER_DISTANCE = 1000;
 
@@ -145,7 +145,7 @@ int	main(void)
 			game.draw3D();
 
 			//2D Objects drawing
-			// game.drawUI();
+			game.drawUI();
 
 			double mouseX, mouseY;
 			bool mousePressed = glfwGetMouseButton(game.window.getWindowData(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;

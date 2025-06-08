@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/07 22:35:35 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 02:09:46 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void	Game::draw3D()
 void	Game::drawUI()
 {
 	Shader	*textShader = shaders.get("text");
-	Shader	*guiShader = shaders.get("gui");
+	// Shader	*guiShader = shaders.get("gui");
 
     glDisable(GL_DEPTH_TEST);
 
@@ -146,7 +146,7 @@ void	Game::drawUI()
 		pause->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
 		pause->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
 		pause->buttons[3].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 160);
-		ui.draw("pause", window.getWindowData(), *guiShader, font, *textShader);
+		// ui.draw("pause", window.getWindowData(), *guiShader, font, *textShader);
 	}
 	if (!started)
 	{
@@ -155,15 +155,15 @@ void	Game::drawUI()
 		std::string	bestcollectiblesmeter = "best collectibles: " + toString((int)bestCollecCount);
 		std::string	distancequest = "travel 1000 meters: " + toString((int)((totalDistance / 1000.f) * 100.f)) + "%";
 		std::string	collecquest = "collect 125 collectibles: " + toString((int)((totalCollectibles / 125.f) * 100.f)) + "%";
-		font.putString(bestdistancemeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 60), vec2(bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
-		font.putString(bestcollectiblesmeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 110), vec2(bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
+		font.putString(bestdistancemeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 100), vec2(bestdistancemeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
+		font.putString(bestcollectiblesmeter, *textShader, vec2((SCREEN_WIDTH / 2) - (bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT / 2) - 140), vec2(bestcollectiblesmeter.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
 		font.putString(std::string("quests: "), *textShader, vec2((SCREEN_WIDTH / 2) - (std::string("quests: ").size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 140), vec2(std::string("quests: ").size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
 		font.putString(distancequest, *textShader, vec2((SCREEN_WIDTH / 2) - (distancequest.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 100), vec2(distancequest.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));
 		font.putString(collecquest, *textShader, vec2((SCREEN_WIDTH / 2) - (collecquest.size() * (TERMINAL_CHAR_SIZE * 2) / 2), (SCREEN_HEIGHT) - 60), vec2(collecquest.size() * (TERMINAL_CHAR_SIZE * 2), (TERMINAL_CHAR_SIZE * 2)));	
 		start->buttons[0].pos = vec2((SCREEN_WIDTH / 2) - 100, 50);
 		start->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
 		start->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
-		ui.draw("start", window.getWindowData(), *guiShader, font, *textShader);
+		// ui.draw("start", window.getWindowData(), *guiShader, font, *textShader);
 		camera.yaw += 4 * window.getDeltaTime();
 		return ;
 	}

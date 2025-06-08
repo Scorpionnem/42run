@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 22:36:31 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 02:04:15 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 02:34:25 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,22 @@
 
 extern unsigned int	quadVAO;
 extern unsigned int	quadVBO;
+
+enum UIAnchor
+{
+	NONE, //Not anchored
+	TOP_LEFT, //Anchored on the top left of the screen
+	TOP_RIGHT, //Anchored on the top right of the screen
+	TOP_CENTER, //Anchored on the top center of the screen
+	CENTER, //Anchored on the center of the screen
+	CENTER_LEFT, //Anchored on the center left of the screen
+	CENTER_RIGHT, //Anchored on the center right of the screen
+	BOTTOM_LEFT, //Anchored on the bottom left of the screen
+	BOTTOM_RIGHT, //Anchored on the bottom left of the screen
+	BOTTOM_CENTER, //Anchored on the bottom left of the screen
+	CENTER_HALF_LEFT, //Anchored on the half left of the screen
+	CENTER_HALF_RIGHT //Anchored on the half right of the screen
+};
 
 class	AButton
 {
@@ -79,22 +95,69 @@ class	AButton
 		
 			glBindVertexArray(0);
 		}
-};
+		void	anchorPos()
+		{
+			if (this->anchor == UIAnchor::TOP_CENTER)
+			{
+				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
+				this->pos.y = 0 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::TOP_LEFT)
+			{
+				this->pos.x = 0 + this->offset.x;
+				this->pos.y = 0 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::TOP_RIGHT)
+			{
+				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
+				this->pos.y = 0 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::CENTER)
+			{
+				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::CENTER_LEFT)
+			{
+				this->pos.x = 0 + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::CENTER_RIGHT)
+			{
+				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::BOTTOM_CENTER)
+			{
+				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::BOTTOM_LEFT)
+			{
+				this->pos.x = 0 + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::BOTTOM_RIGHT)
+			{
+				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::CENTER_HALF_LEFT)
+			{
+				this->pos.x = (SCREEN_WIDTH * 0.25) - this->size.x / 2 + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+			}
+			else if (this->anchor == UIAnchor::CENTER_HALF_RIGHT)
+			{
+				this->pos.x = (SCREEN_WIDTH * 0.75) - this->size.x / 2 + this->offset.x;
+				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+			}
+		}
 
-enum UIAnchor
-{
-	NONE, //Not anchored
-	TOP_LEFT, //Anchored on the top left of the screen
-	TOP_RIGHT, //Anchored on the top right of the screen
-	TOP_CENTER, //Anchored on the top center of the screen
-	CENTER, //Anchored on the center of the screen
-	CENTER_LEFT, //Anchored on the center left of the screen
-	CENTER_RIGHT, //Anchored on the center right of the screen
-	BOTTOM_LEFT, //Anchored on the bottom left of the screen
-	BOTTOM_RIGHT, //Anchored on the bottom left of the screen
-	BOTTOM_CENTER, //Anchored on the bottom left of the screen
-	CENTER_HALF_LEFT, //Anchored on the half left of the screen
-	CENTER_HALF_RIGHT //Anchored on the half right of the screen
+		vec2						offset;
+		vec2						pos;
+		vec2						size;
+		UIAnchor					anchor = UIAnchor::NONE;
 };
 
 /*
@@ -203,60 +266,17 @@ class	xButton : public AButton
 
     		if (mousePressed)
     		{
-    			if (inside)
+    			if (inside && this->wasPressedInside)
     				this->currentTexture = this->clickTexture;
     		}
     		else
     		{
-    			if (this->wasPressedInside && inside)
+    			if (this->wasPressedInside && inside && onClick)
     				this->onClick(clickData);
     			this->wasPressedInside = false;
     		}
 
 			this->previousMousePressed = mousePressed;
-		}
-		void	anchorPos()
-		{
-			if (this->anchor == UIAnchor::TOP_CENTER)
-			{
-				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-				this->pos.y = 0 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::TOP_LEFT)
-			{
-				this->pos.x = 0 + this->offset.x;
-				this->pos.y = 0 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::TOP_RIGHT)
-			{
-				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-				this->pos.y = 0 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER)
-			{
-				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_LEFT)
-			{
-				this->pos.x = 0 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_RIGHT)
-			{
-				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_HALF_LEFT)
-			{
-				this->pos.x = (SCREEN_WIDTH * 0.25) - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_HALF_RIGHT)
-			{
-				this->pos.x = (SCREEN_WIDTH * 0.75) - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
 		}
 
 		bool						wasPressedInside = false;
@@ -265,11 +285,6 @@ class	xButton : public AButton
 		std::function<void(void*)>	onClick = NULL;
 		void						*clickData = NULL;
 
-		UIAnchor					anchor = UIAnchor::NONE;
-		vec2						offset;
-
-		vec2						pos;
-		vec2						size;
 		std::string					label;
 
 		Texture						*texture = NULL;
@@ -430,64 +445,6 @@ class	xSlider : public AButton
 			sliderPos.x = centerX - (sliderWidth / 2);
 			sliderPos.y = pos.y;
 		}
-		void	anchorPos()
-		{
-			if (this->anchor == UIAnchor::TOP_CENTER)
-			{
-				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-				this->pos.y = 0 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::TOP_LEFT)
-			{
-				this->pos.x = 0 + this->offset.x;
-				this->pos.y = 0 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::TOP_RIGHT)
-			{
-				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-				this->pos.y = 0 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER)
-			{
-				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_LEFT)
-			{
-				this->pos.x = 0 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_RIGHT)
-			{
-				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::BOTTOM_CENTER)
-			{
-				this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::BOTTOM_LEFT)
-			{
-				this->pos.x = 0 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::BOTTOM_RIGHT)
-			{
-				this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_HALF_LEFT)
-			{
-				this->pos.x = (SCREEN_WIDTH * 0.25) - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-			else if (this->anchor == UIAnchor::CENTER_HALF_RIGHT)
-			{
-				this->pos.x = (SCREEN_WIDTH * 0.75) - this->size.x / 2 + this->offset.x;
-				this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
-			}
-		}
 
 		bool						wasPressedInside = false;
 		bool						previousMousePressed = false;
@@ -496,12 +453,7 @@ class	xSlider : public AButton
 		std::function<void(float, void*)>	onChange = NULL;
 		void								*clickData = NULL;
 
-		UIAnchor					anchor = UIAnchor::NONE;
-		vec2						offset;
-
-		vec2						pos;
 		vec2						sliderPos;
-		vec2						size;
 		float						sliderWidth = 30;
 		float						value = 0;
 		std::string					label;
