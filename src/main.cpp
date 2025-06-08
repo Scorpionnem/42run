@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/06 12:13:09 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 02:07:07 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "Game.hpp"
 
 float	FOV = 65;
-float	SCREEN_WIDTH = 820;
+float	SCREEN_WIDTH = 1000;
 float	SCREEN_HEIGHT = 900;
 float	RENDER_DISTANCE = 1000;
 
@@ -79,6 +79,30 @@ void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods)
 MeshManager	*g_meshManager;
 ShaderManager	*g_shaderManager;
 
+#include "AButton.hpp"
+
+void	test(void *ptr)
+{
+	std::cout << ptr << std::endl;
+}
+
+void	resetGame(void *ptr)
+{
+	(void)ptr;
+	g_Game->world.resetWorld();
+	g_Game->player.pos = vec3(0);
+	g_Game->player.velocity = vec3(0);
+	g_Game->started = true;
+	g_Game->camera.yaw = -90;
+	resumeGame();
+}
+
+void	sliderTest(float val, void *ptr)
+{
+	(void)ptr;
+	std::cout << val << std::endl;
+}
+
 int	main(void)
 {
 	try {
@@ -87,6 +111,26 @@ int	main(void)
 		g_Game = &game;
 		g_meshManager = &game.meshManager;
 		g_shaderManager = &game.shaders;
+
+		std::vector<AButton *>	buttons;
+		buttons.push_back(new xButton(UIAnchor::TOP_CENTER, "", vec2(0, 75), vec2(200, 200), test, NULL));
+
+		buttons.push_back(new xButton(UIAnchor::CENTER_HALF_RIGHT, "cosmetics", vec2(85, 110), vec2(200, 100), test, &game));
+		buttons.push_back(new xButton(UIAnchor::CENTER_HALF_LEFT, "powerups", vec2(-85, 110), vec2(200, 100), test, &game));
+
+		buttons.push_back(new xButton(UIAnchor::CENTER, "start", vec2(0, 0), vec2(350, 100), resetGame, NULL));
+		buttons.push_back(new xButton(UIAnchor::CENTER, "quests", vec2(0, 110), vec2(350, 100), test, &game));
+		buttons.push_back(new xButton(UIAnchor::CENTER, "options", vec2(-87.5, 220), vec2(170, 100), test, &game));
+		buttons.push_back(new xButton(UIAnchor::CENTER, "quit game", vec2(87.5, 220), vec2(170, 100), test, &game));
+
+		for (auto *button : buttons)
+		{
+			button->setAssets(new Texture(BUTTON_PATH), new Texture(BUTTON_PRESSED_PATH), g_shaderManager->get("gui"), g_shaderManager->get("text"), &game.font);
+			if (xSlider* slider = dynamic_cast<xSlider*>(button))
+				slider->setAssets(NULL, NULL, new Texture(SLIDER_BG_PATH), 0, NULL, NULL, NULL);
+		}
+
+		buttons[0]->setAssets(new Texture(ICON_PATH), new Texture(BUTTON_PRESSED_PATH), g_shaderManager->get("gui"), g_shaderManager->get("text"), &game.font);
 
 		while (game.window.up())
 		{
@@ -101,7 +145,19 @@ int	main(void)
 			game.draw3D();
 
 			//2D Objects drawing
-			game.drawUI();
+			// game.drawUI();
+
+			double mouseX, mouseY;
+			bool mousePressed = glfwGetMouseButton(game.window.getWindowData(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+			glfwGetCursorPos(game.window.getWindowData(), &mouseX, &mouseY);
+
+			glDisable(GL_DEPTH_TEST);
+			for (auto *button : buttons)
+			{
+				button->update(vec2(mouseX, mouseY), mousePressed);
+				button->draw();
+			}
+			glEnable(GL_DEPTH_TEST);
 
 			//Swaps buffers and get key actions
 			game.keyHook();

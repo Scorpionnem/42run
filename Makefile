@@ -30,6 +30,7 @@ CPP_FILES :=	main \
 				Interface \
 				Font \
 				Skybox \
+				AButton \
 				Game
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))

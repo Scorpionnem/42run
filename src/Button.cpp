@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 12:21:13 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/03 11:36:55 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 00:00:29 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ void Button::draw(Shader &shader, Font &font, Shader &textShader)
     mat4 model = translate(mat4(1.0f), vec3(pos.x, pos.y, 0.0f));
     model = scale(model, vec3(width, height, 1.0f));
     
+	mat4 projection = ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+    
     shader.setMat4("model", model);
+	shader.setMat4("projection", projection);
     
     glBindVertexArray(buttonVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

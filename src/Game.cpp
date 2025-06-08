@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/06 12:16:50 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/07 22:35:35 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ void	quitGame()
 
 void Game::logic()
 {
-	camPos.x = 0;
-	camPos.y = 3.5;
-	camPos.z = 3.5;
-	camPitch = -15;
+	camera.pos.x = 0;
+	camera.pos.y = 3.5;
+	camera.pos.z = 3.5;
+	camera.pitch = -15;
 	if (died && glfwGetTime() - diedTime > 1)
 		quitGame();
 	if (hasPowerup && glfwGetTime() - powerupTime > 2)
@@ -164,7 +164,7 @@ void	Game::drawUI()
 		start->buttons[1].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2));
 		start->buttons[2].pos = vec2((SCREEN_WIDTH / 2) - 125, (SCREEN_HEIGHT / 2) + 80);
 		ui.draw("start", window.getWindowData(), *guiShader, font, *textShader);
-		camYaw += 4 * window.getDeltaTime();
+		camera.yaw += 4 * window.getDeltaTime();
 		return ;
 	}
 
@@ -190,7 +190,7 @@ void	Game::setShaderValues()
 	textShader->setVec3("color", vec3(0.1, 1.0, 0.2));
 	textShader->setBool("rainbow", hasPowerup);
 	meshShader->use();
-	meshShader->setVec3("viewPos", camPos);
+	meshShader->setVec3("viewPos", camera.pos);
 	meshShader->setFloat("time", glfwGetTime());
 	meshShader->setFloat("ambientStrength", 0.5);
 	camera.setViewMatrix(*meshShader);
@@ -213,7 +213,7 @@ void	resetGame()
 	g_Game->player.pos = vec3(0);
 	g_Game->player.velocity = vec3(0);
 	g_Game->started = true;
-	camYaw = -90;
+	g_Game->camera.yaw = -90;
 	resumeGame();
 }
 
