@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:14:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 12:44:41 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 00:16:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@
 void	resumeGame();
 
 void	closeWindow();
+
 # include "MeshManager.hpp"
 # include "ShaderManager.hpp"
 # include "TextureManager.hpp"
-
-extern MeshManager	*MESH_MANAGER;
-extern ShaderManager	*SHADER_MANAGER;
-extern TextureManager	*TEXTURE_MANAGER;
+# include "CharacterManager.hpp"
 
 # include "libs.hpp"
 # include "Window.hpp"
@@ -34,15 +32,12 @@ extern TextureManager	*TEXTURE_MANAGER;
 
 # define SKYBOX_PATHES "textures/skybox/right.bmp","textures/skybox/left.bmp","textures/skybox/top.bmp","textures/skybox/bottom.bmp","textures/skybox/front.bmp","textures/skybox/back.bmp"
 
-inline void	do_nothing(){}
-
 class	Game
 {
 	public:
 		Game();
 		~Game();
 		void	logic();
-		void	loadUIs();
 		void	draw3D();
 		void	drawUI();
 		void	displayFPS();
@@ -57,9 +52,6 @@ class	Game
 
 		std::string	fps = "0 fps";
 
-		TextureManager	textures;
-		ShaderManager	shaders;
-		MeshManager		meshManager;
         World           world;
         Player          player;
 
@@ -81,16 +73,8 @@ class	Game
 		double	powerupTime = 0;
 };
 
+void	quitGame();
+
 extern Game	*GAME;
-
-inline  void    Game::resume()
-{
-	paused = false;
-}
-
-inline void	Game::pause()
-{
-	paused = true;
-}
 
 #endif

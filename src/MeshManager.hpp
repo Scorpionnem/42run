@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 21:02:44 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 12:25:42 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 23:13:42 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,7 @@ class	MeshManager
 
 		std::map<std::string, Mesh*>	loadedMeshes;
 };
+
+extern MeshManager	*MESH_MANAGER;
 
 #endif

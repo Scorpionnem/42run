@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:17:41 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/03 12:18:44 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 23:16:38 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,7 @@ class	ShaderManager
 	private:
 		std::map<std::string, Shader *>	shaders;
 };
+
+extern	ShaderManager	*SHADER_MANAGER;
 
 #endif

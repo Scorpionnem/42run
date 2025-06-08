@@ -28,6 +28,7 @@ CPP_FILES :=	main \
 				Font \
 				Skybox \
 				UIElement \
+				InterfaceManager \
 				Game
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))

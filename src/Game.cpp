@@ -6,35 +6,19 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 15:51:03 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 00:01:41 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Game.hpp"
-
+#include "InterfaceManager.hpp"
 
 Game::Game() : skybox({SKYBOX_PATHES})
 {
-	shaders.load({"mesh", MESH_VERT_SHADER, MESH_FRAG_SHADER});
-	shaders.load({"gui", GUI_VERT_SHADER, GUI_FRAG_SHADER});
-	shaders.load({"text", TEXT_VERT_SHADER, TEXT_FRAG_SHADER});
-	shaders.load({"skybox", SKYBOX_VERT_SHADER, SKYBOX_FRAG_SHADER});
-	shaders.load({"fullbright", MESH_VERT_SHADER, MESH_FULLBRIGHT_SHADER});
-	shaders.get("text")->use();
-	shaders.get("text")->setInt("tex0", 0);
-    shaders.get("mesh")->use();
-	shaders.get("mesh")->setInt("tex0", 0);
-	shaders.get("skybox")->use();
-	shaders.get("skybox")->setInt("skybox", 0);
-
-	meshManager.load("models/scorpionem/scorpionem.obj");
-	meshManager.load("models/school_entrance.obj");
-	meshManager.load("models/clustermiddle.obj", "models/bricks.bmp");
-	meshManager.load("models/clusterexit.obj", "models/bricks.bmp");
-	meshManager.load("models/corridor.obj", "models/bricks.bmp");
-	
-	loadUIs();
+	camera.pos.x = 0;
+	camera.pos.y = 3.5;
+	camera.pos.z = 3.5;
 }
 
 Game::~Game()
@@ -55,20 +39,20 @@ void	quitGame()
 	GAME->distance = 0;
 	GAME->collectibles = 0;
 	GAME->pause();
+	INTERFACES_MANAGER->current = INTERFACES_MANAGER->get(MAIN_INTERFACE);
 }
 
 void Game::logic()
 {
-	camera.pos.x = 0;
-	camera.pos.y = 3.5;
-	camera.pos.z = 3.5;
-	camera.pitch = -15;
+	INTERFACES_MANAGER->update();
+	
 	if (died && glfwGetTime() - diedTime > 1)
 		quitGame();
 	if (hasPowerup && glfwGetTime() - powerupTime > 2)
 		hasPowerup = false;
 	if (paused || died)
 		return ;
+
 	distance += world.speed * window.getDeltaTime();
 	player.update(window.getDeltaTime());
 	if (!hasPowerup && player.isDead(world))
@@ -117,8 +101,8 @@ void	Game::keyHook()
 
 void	Game::draw3D()
 {
-	Shader	*skyboxShader = shaders.get("skybox");
-	Shader	*meshShader = shaders.get("mesh");
+	Shader	*skyboxShader = SHADER_MANAGER->get("skybox");
+	Shader	*meshShader = SHADER_MANAGER->get("mesh");
 
 	skybox.draw(camera, *skyboxShader);
 	
@@ -132,14 +116,15 @@ void	Game::drawUI()
 {
     glDisable(GL_DEPTH_TEST);
 	displayFPS();
+	INTERFACES_MANAGER->draw();
     glEnable(GL_DEPTH_TEST);
 }
 
 void	Game::setShaderValues()
 {
-	Shader	*textShader = shaders.get("text");
-	Shader	*meshShader = shaders.get("mesh");
-	Shader	*fullBrightShader = shaders.get("fullbright");
+	Shader	*textShader = SHADER_MANAGER->get("text");
+	Shader	*meshShader = SHADER_MANAGER->get("mesh");
+	Shader	*fullBrightShader = SHADER_MANAGER->get("fullbright");
 
 	textShader->use();
 	textShader->setFloat("time", glfwGetTime());
@@ -159,8 +144,8 @@ void	Game::setShaderValues()
 void	Game::displayFPS()
 {
 	if ((int)window._lastFrame != (int)window._currentFrame)
-		fps = window.displayFPS(font, *shaders.get("text"));
-	font.putString(fps.c_str(), *shaders.get("text"),
+		fps = window.displayFPS(font, *SHADER_MANAGER->get("text"));
+	font.putString(fps.c_str(), *SHADER_MANAGER->get("text"),
 		vec2(SCREEN_WIDTH - fps.length() * TERMINAL_CHAR_SIZE, TERMINAL_CHAR_SIZE * 0),
 		vec2(fps.length() * TERMINAL_CHAR_SIZE, TERMINAL_CHAR_SIZE));
 }
@@ -175,6 +160,14 @@ void	resetGame()
 	resumeGame();
 }
 
-void	Game::loadUIs()
+void    Game::resume()
 {
+	INTERFACES_MANAGER->current = INTERFACES_MANAGER->get(GAME_INTERFACE);
+	paused = false;
+}
+
+void	Game::pause()
+{
+	INTERFACES_MANAGER->current = INTERFACES_MANAGER->get(PAUSE_INTERFACE);
+	paused = true;
 }

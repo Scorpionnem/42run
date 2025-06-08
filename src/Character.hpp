@@ -1,37 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Font.hpp                                           :+:      :+:    :+:   */
+/*   Character.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/21 14:45:03 by mbatty            #+#    #+#             */
-/*   Updated: 2025/05/28 12:53:31 by mbatty           ###   ########.fr       */
+/*   Created: 2025/06/08 22:59:17 by mbatty            #+#    #+#             */
+/*   Updated: 2025/06/08 23:05:38 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FONT_HPP
-# define FONT_HPP
+#ifndef CHARACTER_HPP
+# define CHARACTER_HPP
 
 # include "libs.hpp"
-# include "Shader.hpp"
-# include "Texture.hpp"
+# include "Mesh.hpp"
 
-extern GLuint fontVAO;
-extern GLuint fontVBO;
+enum CharactersID
+{
+	SCORPIONEM,
+	ELEO,
+	THEWORFER27,
+	MAX_CHARACTER
+};
 
-class	Font
+class	Character
 {
 	public:
-		~Font();
-		Font();
-		Texture	&operator[](char c);
-		Texture	&getChar(char c);
-		void	initFontModel();
-		void    putChar(char c, Shader &shader, vec2 pos, vec2 size);
-		void	putString(std::string str, Shader &shader, vec2 pos, vec2 size);
+		Character(CharactersID ID, Mesh *mesh, Mesh *sneakMesh)
+		{
+			this->ID = ID;
+			this->mesh = mesh;
+			this->sneakMesh = sneakMesh;
+		}
+		~Character(){}
+		Mesh			*mesh;
+		Mesh			*sneakMesh;
+		CharactersID	ID;
 
-		std::array<Texture, 128> font;	
+		bool			owned = false;
+		bool			equipped = false;
 };
 
 #endif

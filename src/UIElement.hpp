@@ -6,14 +6,17 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 12:42:04 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 14:18:31 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 00:06:15 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UIELEMENT_HPP
 # define UIELEMENT_HPP
 
-# include "Game.hpp"
+# include "libs.hpp"
+# include "TextureManager.hpp"
+# include "ShaderManager.hpp"
+# include "Font.hpp"
 
 # define DEFAULT_BUTTON_TEXTURE BUTTON_PATH
 # define DEFAULT_BUTTON_CLICK_TEXTURE BUTTON_PRESSED_PATH
@@ -55,7 +58,6 @@ class	UIElement
 			Updates button's variables like its current used texture (normal/pressed)
 		*/
         virtual void	update(vec2 mousePos, bool mousePressed) = 0;
-	protected:
 		/*
 			Returns wether the mouse is in the button or not
 		*/
@@ -225,7 +227,7 @@ class	Button : public UIElement
 
 			this->fontShader = SHADER_MANAGER->get("text");
 			this->buttonShader = SHADER_MANAGER->get("gui");
-			this->font = &GAME->font;
+			this->font = FONT;
 		}
 		// Sets custom button assets, if argument is NULL, asset wont be set
 		void	setAssets(Texture *texture, Texture *clickTexture, Shader *buttonShader, Shader *fontShader, Font *font)
@@ -352,7 +354,7 @@ class	Slider : public UIElement
 
 			this->fontShader = SHADER_MANAGER->get("text");
 			this->buttonShader = SHADER_MANAGER->get("gui");
-			this->font = &GAME->font;
+			this->font = FONT;
 		}
 		void	setAssets(Texture *texture, Texture *clickTexture, Shader *buttonShader, Shader *fontShader, Font *font)
 		{
@@ -513,7 +515,7 @@ class	Text : public UIElement
 		void	loadDefaultAssets()
 		{
 			this->fontShader = SHADER_MANAGER->get("text");
-			this->font = &GAME->font;
+			this->font = FONT;
 		}
 		void	draw()
 		{

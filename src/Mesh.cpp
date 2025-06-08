@@ -6,11 +6,12 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:45:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/05 12:45:04 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 00:26:54 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Mesh.hpp"
+#include "TextureManager.hpp"
 
 static	bool countInfos = true;
 
@@ -32,7 +33,6 @@ Mesh::~Mesh()
 		std::cout << "Destroying mesh: " << this->path << std::endl;
 	for (auto it = materialGroups.begin(); it != materialGroups.end(); it++)
 	{
-		delete it->second.texture;
 		glDeleteBuffers(1, &it->second.VBO);
 		glDeleteBuffers(1, &it->second.EBO);
 		glDeleteVertexArrays(1, &it->second.VAO);
@@ -90,7 +90,7 @@ void	Mesh::upload()
 {
 	for (auto it = materialGroups.begin(); it != materialGroups.end(); it++)
 	{
-		it->second.texture = new Texture(it->first.c_str());
+		it->second.texture = TEXTURE_MANAGER->get(it->first);
 		glGenVertexArrays(1, &it->second.VAO);
 		glGenBuffers(1, &it->second.VBO);			
 		glGenBuffers(1, &it->second.EBO);

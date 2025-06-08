@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 12:22:51 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 12:38:14 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/08 23:16:22 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,7 @@ class	TextureManager
 
 		std::map<std::string, Texture*>	loadedTextures;
 };
+
+extern TextureManager	*TEXTURE_MANAGER;
 
 #endif
