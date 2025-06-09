@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:29 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/08 23:55:15 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:42:35 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
 	(void)window;(void)key;(void)scancode;(void)action;(void)mods;
 
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	if (GAME->started && key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);

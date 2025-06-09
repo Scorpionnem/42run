@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:00:44 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:40:59 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:31:43 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ inline void	buildQuestsInterface(InterfaceManager *interfaces)
 		
 		quest1->label = "travel 1000 meters: " + std::to_string((int)((GAME->totalDistance / 1000.0f) * 100)) + "%";
 		quest2->label = "collect 125 collectibles: " + std::to_string((int)((GAME->totalCollectibles / 125.f) * 100)) + "%";
-		quest3->label = "play 100 times: " + std::to_string(1);
+		quest3->label = "play 100 times: " + std::to_string(GAME->timesPlayed) + "%";
 
 		quest1->size.x = quest1->label.size() * quest1->size.y;
 		quest2->size.x = quest2->label.size() * quest2->size.y;

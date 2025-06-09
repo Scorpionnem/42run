@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:45:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:26:54 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:47:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,13 +305,15 @@ void	Mesh::parseFace(std::istringstream &iss, int &lineNumber, float &colorOffse
 		const FaceVertex &fv2 = faceVertices[i];
 		const FaceVertex &fv3 = faceVertices[i + 1];
 			
+		if (fv1.posIndex < 0 || fv2.posIndex < 0 || fv3.posIndex < 0)
+			throw std::runtime_error("Invalid vertice on line " + toString(lineNumber));
 		if (fv1.posIndex > (int)positions.size() - 1 || fv2.posIndex > (int)positions.size() - 1 || fv3.posIndex > (int)positions.size() - 1)
 			throw std::runtime_error("Invalid vertice on line " + toString(lineNumber));
 		vec3 v1 = positions[fv1.posIndex];
 		vec3 v2 = positions[fv2.posIndex];
 		vec3 v3 = positions[fv3.posIndex];
 		
-		if (texPositions.size() > 0 && (fv1.texIndex > (int)texPositions.size() - 1 || fv2.texIndex > (int)texPositions.size() - 1 || fv3.texIndex > (int)texPositions.size() - 1))
+		if (fv1.texIndex > (int)texPositions.size() - 1 || fv2.texIndex > (int)texPositions.size() - 1 || fv3.texIndex > (int)texPositions.size() - 1)
 			throw std::runtime_error("Invalid texture vertice on line " + toString(lineNumber));
 		vec2 uv1 = (fv1.texIndex >= 0 && fv1.texIndex < (int)texPositions.size()) ? vec2(texPositions[fv1.texIndex].x, texPositions[fv1.texIndex].y) : vec2(-1);
 		vec2 uv2 = (fv2.texIndex >= 0 && fv2.texIndex < (int)texPositions.size()) ? vec2(texPositions[fv2.texIndex].x, texPositions[fv2.texIndex].y) : vec2(-1);

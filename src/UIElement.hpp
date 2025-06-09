@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 12:42:04 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:06:15 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:42:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ class	UIElement
 				return;
 		
 			if (DEBUG)
-				std::cout << "CACA SIGMA" << std::endl;
+				std::cout << "Loading simple quad" << std::endl;
 		
 			float vertices[] =
 			{

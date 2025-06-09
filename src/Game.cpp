@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:25:07 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 01:47:22 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:57:26 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	quitGame()
 	GAME->totalDistance += GAME->distance;
 	GAME->distance = 0;
 	GAME->collectibles = 0;
+	GAME->timesPlayed++;
+	GAME->hasPowerup = false;
 	GAME->pause();
 	INTERFACES_MANAGER->current = INTERFACES_MANAGER->get(MAIN_INTERFACE);
 }
@@ -48,11 +50,13 @@ void Game::logic()
 	
 	if (died && glfwGetTime() - diedTime > 1)
 		quitGame();
-	if (hasPowerup && glfwGetTime() - powerupTime > 2)
+	if (hasPowerup && powerupTime > 2)
 		hasPowerup = false;
 	if (paused || died)
 		return ;
-
+		
+	if (hasPowerup)
+		powerupTime += 1 * window.getDeltaTime();
 	distance += world.speed * window.getDeltaTime();
 	player.update(window.getDeltaTime());
 	if (!hasPowerup && player.isDead(world))
@@ -68,7 +72,7 @@ void Game::logic()
 	if (player.doesGetPowerup(world))
 	{
 		hasPowerup = true;
-		powerupTime = glfwGetTime();
+		powerupTime = 0;
 	}
 	world.update(window.getDeltaTime());
 }
@@ -83,7 +87,6 @@ void	Game::keyHook()
 
 	bool spaceJustPressed = spacePressed && !prevSpacePressed;
 
-	std::cout << player.doubleJump << std::endl;
 	if (!player.sneaking && player.onGround && spacePressed)
 	{
 		player.timeFallStart = glfwGetTime();
@@ -145,7 +148,7 @@ void	Game::setShaderValues()
 	textShader->setFloat("time", glfwGetTime());
 	textShader->setFloat("SCREEN_WIDTH", SCREEN_WIDTH);
 	textShader->setFloat("SCREEN_HEIGHT", SCREEN_HEIGHT);
-	textShader->setVec3("color", vec3(1, 1, 1));
+	textShader->setVec3("color", vec3(0.5, 1, 0.5));
 	textShader->setBool("rainbow", hasPowerup);
 	meshShader->use();
 	meshShader->setVec3("viewPos", camera.pos);

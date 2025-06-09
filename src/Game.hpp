@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:14:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 00:16:53 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:30:44 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ class	Game
 		unsigned int		collectibles = 0;
 		unsigned int		bestCollecCount = 0;
 		unsigned int		totalCollectibles = 0;
+		unsigned int		timesPlayed = 0;
 		int		bestDistance = 0;
 		bool	hasPowerup = false;
 		double	powerupTime = 0;

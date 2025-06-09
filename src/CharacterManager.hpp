@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:59:58 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 01:23:59 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:49:41 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class	CharacterManager
 					}
 					case ELEO:
 					{
-						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/eleo.obj"), MESH_MANAGER->get("models/eleo_sneak.obj"));
+						characters[i] = new Character((CharactersID)i, MESH_MANAGER->get("models/eleo/eleo.obj"), MESH_MANAGER->get("models/eleo/eleo_sneak.obj"));
 						break;
 					}
 					case THEWORFER27:

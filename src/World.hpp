@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:27:23 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/09 01:38:15 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:40:18 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,21 +116,9 @@ class   World
     		std::string path = "models/corridor.obj";
     		std::string texPath = "models/bricks.bmp";
 			if (type == Cluster1 || type == Cluster2 || type == Cluster3)
-			{
 				path = "models/clustermiddle.obj";
-				texPath = "models/bricks.bmp";
-			}
 			if (type == Cluster1Exit || type == Cluster2Exit || type == Cluster3Exit)
-			{
 				path = "models/clusterexit.obj";
-				texPath = "models/bricks.bmp";
-			}
-			if (type == Cluster1Entrance || type == Cluster2Entrance || type == Cluster3Entrance)
-				texPath = "models/bricks.bmp";
-			if (type == Corridor)
-				texPath = "models/bricks.bmp";
-			if (type == Cafetaria)
-				texPath = "models/bricks.bmp";
 			
     		Mesh* mesh = MESH_MANAGER->get(path, texPath);
 			vec3	tmp = rooms.back()->pos;

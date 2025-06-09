@@ -6,14 +6,14 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:33:10 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/06 12:09:52 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/06/09 11:29:36 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBS_HPP
 # define LIBS_HPP
 
-# define DEBUG 1
+# define DEBUG 0
 
 # include <iostream>
 # include <string>

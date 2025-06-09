@@ -1,6 +1,6 @@
 # Made in Blockbench 4.12.1
 newmtl m_668de65a-51ee-5f5c-5005-2146a8f374da
-map_Kd skin.bmp.png
+map_Kd skin.bmp
 newmtl m_9c7d4a15-f1cc-f336-cc1c-5125e39bc726
-map_Kd cape.bmp.png
+map_Kd cape.bmp
 newmtl none
