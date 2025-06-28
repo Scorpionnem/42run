@@ -1,3 +1,5 @@
+42 Grade: 124/100 (Yes the max grade is 124 not 125 for some reason (in of June of 2025))
+
 A simple game inspired by Temple Run.
 This project is part of the 42 curriculum, aiming to explore graphics programming using OpenGL to create a 3D game.
 
